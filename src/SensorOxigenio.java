@@ -10,4 +10,15 @@
  */
 public class SensorOxigenio {
     
+    private float leituraOxigenioDissolvido;
+
+    public float getLeituraOxigenioDissolvido() {
+        return leituraOxigenioDissolvido;
+    }
+
+    public void setLeituraOxigenioDissolvido(float leituraOxigenioDissolvido) {
+        this.leituraOxigenioDissolvido = leituraOxigenioDissolvido;
+    }
+    
+    
 }

@@ -10,4 +10,16 @@
  */
 public class SensorSonar {
     
+    private float leituraVolume;
+
+    public float getLeituraVolume() {
+        return leituraVolume;
+    }
+
+    public void setLeituraVolume(float leituraVolume) {
+        this.leituraVolume = leituraVolume;
+    }
+    
+    
+    
 }

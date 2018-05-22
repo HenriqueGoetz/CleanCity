@@ -9,5 +9,25 @@
  * @author Henrique Goetz
  */
 public class Sensor {
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    private int id;
+    private String enderecoIP;
+
+    public String getEnderecoIP() {
+        return enderecoIP;
+    }
+
+    public void setEnderecoIP(String enderecoIP) {
+        this.enderecoIP = enderecoIP;
+    }
+    
     
 }

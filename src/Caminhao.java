@@ -10,4 +10,15 @@
  */
 public class Caminhao {
     
+    private boolean disponibilidade;
+
+    public boolean isDisponibilidade() {
+        return disponibilidade;
+    }
+
+    public void setDisponibilidade(boolean disponibilidade) {
+        this.disponibilidade = disponibilidade;
+    }
+    
+    
 }

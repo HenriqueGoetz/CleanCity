@@ -10,4 +10,25 @@
  */
 public class Capacidade {
     
+    private float volume;
+    private float peso;
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+    
+    
+    
 }

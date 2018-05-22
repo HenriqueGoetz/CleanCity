@@ -10,4 +10,15 @@
  */
 public class Balanca {
     
+    private float leituraPeso;
+
+    public float getLeituraPeso() {
+        return leituraPeso;
+    }
+
+    public void setLeituraPeso(float leituraPeso) {
+        this.leituraPeso = leituraPeso;
+    }
+    
+    
 }

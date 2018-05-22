@@ -10,4 +10,14 @@
  */
 public class SensorPh {
     
+    private float leituraPh;
+
+    public float getLeituraPh() {
+        return leituraPh;
+    }
+
+    public void setLeituraPh(float leituraPh) {
+        this.leituraPh = leituraPh;
+    }
+
 }
