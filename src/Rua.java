@@ -20,5 +20,4 @@ public class Rua {
         this.nome = nome;
     }
     
-    
 }
