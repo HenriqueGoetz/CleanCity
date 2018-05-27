@@ -8,7 +8,7 @@
  *
  * @author Henrique Goetz
  */
-public class SensorSonar {
+public class SensorSonar extends Sensor {
     
     private float leituraVolume;
 

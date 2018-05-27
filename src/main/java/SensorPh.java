@@ -8,17 +8,17 @@
  *
  * @author Henrique Goetz
  */
-public class Balanca {
+public class SensorPh extends Sensor {
     
-    private float leituraPeso;
+    private float leituraPh;
 
-    public float getLeituraPeso() {
-        return leituraPeso;
+    public float getLeituraPh() {
+        return leituraPh;
     }
 
-    public void setLeituraPeso(float leituraPeso) {
-        this.leituraPeso = leituraPeso;
+    public void setLeituraPh(float leituraPh) {
+        this.leituraPh = leituraPh;
     }
     
-    
+
 }

@@ -9,8 +9,16 @@
  * @author Henrique Goetz
  */
 public class Caminhao {
-    
+
     private boolean disponibilidade;
+    private SensorSonar sensorVolume;
+    private Balanca balanca;
+    private Capacidade capacidade;
+
+    public Caminhao() {
+        this.capacidade.setPeso(0);
+        this.capacidade.setVolume(0);
+    }
 
     public boolean isDisponibilidade() {
         return disponibilidade;
@@ -19,6 +27,5 @@ public class Caminhao {
     public void setDisponibilidade(boolean disponibilidade) {
         this.disponibilidade = disponibilidade;
     }
-    
-    
+
 }

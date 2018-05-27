@@ -12,6 +12,10 @@ public class Coleta {
     
     private int hora;
     private int minutos;
+    private Caminhao[] frota;
+    private Rota rota;
+    private DiaDaSemana[] dias;
+    private Equipe equipe;
 
     public int getHora() {
         return hora;

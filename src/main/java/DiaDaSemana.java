@@ -8,6 +8,6 @@
  *
  * @author Henrique Goetz
  */
-public class Lixeira {
-    
+public enum DiaDaSemana {
+    DOM, SEG, TER, QUA, QUI, SEX, SAB
 }

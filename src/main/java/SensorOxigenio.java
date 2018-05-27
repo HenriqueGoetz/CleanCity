@@ -8,7 +8,7 @@
  *
  * @author Henrique Goetz
  */
-public class SensorOxigenio {
+public class SensorOxigenio extends Sensor {
     
     private float leituraOxigenioDissolvido;
 

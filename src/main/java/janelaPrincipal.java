@@ -1,9 +1,25 @@
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Henrique Goetz
@@ -26,17 +42,27 @@ public class janelaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mapa = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mapa.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -72,11 +98,33 @@ public class janelaPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new janelaPrincipal().setVisible(true);
+                try {
+                    try {
+                        GeoApiContext context = new GeoApiContext.Builder()
+                                .apiKey("AIzaSyAzl_DjIFM8NsFlrwxc0QixFZdCKcC4Tog")
+                                .build();
+                        GeocodingResult[] results = GeocodingApi.geocode(context,
+                                "1600 Amphitheatre Parkway Mountain View, CA 94043").await();
+                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                        System.out.println(gson.toJson(results[0].addressComponents));
+                    } catch (ApiException | InterruptedException | IOException ex) {
+                        Logger.getLogger(janelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    janelaPrincipal janela = new janelaPrincipal();
+                    URL url = new URL("http://maps.googleapis.com/maps/api/staticmap?center=48.167432,10.533072&size=400x400&sensor=false&zoom=7");
+                    BufferedImage c = ImageIO.read(url);
+                    ImageIcon image = new ImageIcon(c);
+                    //JLabel mapa = new JLabel(image);
+                    janela.mapa.setIcon(image);
+                    janela.setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(janelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel mapa;
     // End of variables declaration//GEN-END:variables
 }

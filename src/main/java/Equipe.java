@@ -8,16 +8,8 @@
  *
  * @author Henrique Goetz
  */
-public class SensorPh {
+public class Equipe {
+    private Funcionario[] funcionarios;
+    private int id;
     
-    private float leituraPh;
-
-    public float getLeituraPh() {
-        return leituraPh;
-    }
-
-    public void setLeituraPh(float leituraPh) {
-        this.leituraPh = leituraPh;
-    }
-
 }
