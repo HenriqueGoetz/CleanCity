@@ -1,5 +1,8 @@
 package com.grupo04.cleancity;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import modelagem.cleancity.*;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -21,8 +24,10 @@ public class MainApp extends Application {
        
         WebView browser = new WebView();
         WebEngine webEngine = browser.getEngine();
-        //webEngine.loadContent("../../../resources/html/mapa.html");
-        webEngine.load("https://www.google.com.br/maps");
+        String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
+        String contents = new String(Files.readAllBytes(Paths.get(path)));
+        webEngine.loadContent(contents);
+        //webEngine.load("https://www.google.com.br/maps");
         
         Scene scene = new Scene(browser,750,500);
         scene.getStylesheets().add("/styles/Styles.css");
