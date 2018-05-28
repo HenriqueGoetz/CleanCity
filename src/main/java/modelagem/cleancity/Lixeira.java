@@ -5,7 +5,6 @@ package modelagem.cleancity;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Henrique Goetz
@@ -23,12 +22,19 @@ public class Lixeira {
         this.coord.setLatitude(lati);
         this.coord.setLongitude(longi);
     }
-    
-    public float getPeso(){
+
+    public float getPeso() {
         return balanca.getLeituraPeso();
     }
-    
-    public float getVolume(){
+
+    public float getVolume() {
         return sensorVolume.getLeituraVolume();
+    }
+
+    public void jogarNaLixeira() {
+
+        this.sensorVolume.lerVolume();
+        this.balanca.lerBalanca();
+
     }
 }

@@ -7,13 +7,12 @@ import java.util.Random;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Henrique Goetz
  */
 public class Balanca extends Sensor {
-    
+
     private float leituraPeso;
 
     public float getLeituraPeso() {
@@ -23,13 +22,9 @@ public class Balanca extends Sensor {
     public void setLeituraPeso(float leituraPeso) {
         this.leituraPeso = leituraPeso;
     }
-    
-    public void lerBalanca(){
-    Random random = new Random();
-        setLeituraPeso((float) ((random.nextInt()%10) + this.leituraPeso));
-        if(this.leituraPeso > 100){
-            this.leituraPeso = 100;
-        }
-    
+
+    public void lerBalanca() {
+        Random random = new Random();
+        setLeituraPeso((float) ((random.nextInt() % 10) + this.leituraPeso));
     }
 }
