@@ -3,6 +3,7 @@ modelagem\cleancity\ReguladorPh.class
 modelagem\cleancity\Esquina.class
 modelagem\cleancity\MapaGoogle$3.class
 modelagem\cleancity\SensorPh.class
+com\grupo04\cleancity\MainApp$2.class
 com\grupo04\cleancity\MainApp.class
 modelagem\cleancity\SensorSonar.class
 modelagem\cleancity\Caminhao.class
