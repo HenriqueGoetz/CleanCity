@@ -6,9 +6,17 @@ import java.nio.file.Paths;
 import modelagem.cleancity.*;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -18,7 +26,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         
         //MapaGoogle mapa = new MapaGoogle();
        
@@ -34,6 +42,53 @@ public class MainApp extends Application {
         
         stage.setTitle("JavaFX and Maven");
         stage.setScene(scene);
+        //stage.show();
+        
+        VBox vBoxMapa = new VBox();
+        vBoxMapa.getChildren().addAll(browser);
+ 
+        final Label label = new Label();
+        Button btn = new Button();
+        btn.setText("Adicionar Lixeira");
+        btn.setMinWidth(100);
+        btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+ 
+            @Override
+            public void handle(MouseEvent event) {
+                MouseButton button = event.getButton();
+                if(button==MouseButton.PRIMARY){
+                    label.setText("PRIMARY button clicked on button");
+                }else if(button==MouseButton.SECONDARY){
+                    label.setText("SECONDARY button clicked on button");
+                }else if(button==MouseButton.MIDDLE){
+                    label.setText("MIDDLE button clicked on button");
+                }
+            }
+        });
+        
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(browser, btn, label);
+         
+        StackPane root = new StackPane();
+        root.getChildren().add(hBox);
+        //root.getChildren().add(vBoxMapa);
+         
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+ 
+            @Override
+            public void handle(MouseEvent event) {
+                MouseButton button = event.getButton();
+                if(button==MouseButton.PRIMARY){
+                    label.setText("PRIMARY button clicked");
+                }else if(button==MouseButton.SECONDARY){
+                    label.setText("SECONDARY button clicked");
+                }else if(button==MouseButton.MIDDLE){
+                    label.setText("MIDDLE button clicked");
+                }
+            }
+        });
+        Scene cena = new Scene(root, 400, 300);
+        stage.setScene(cena);
         stage.show();
     }
 
@@ -48,5 +103,7 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    
 
 }

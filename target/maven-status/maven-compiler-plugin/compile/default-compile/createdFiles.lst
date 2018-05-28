@@ -2,9 +2,8 @@ modelagem\cleancity\MapaGoogle$1.class
 modelagem\cleancity\ReguladorPh.class
 modelagem\cleancity\Esquina.class
 modelagem\cleancity\MapaGoogle$3.class
-janelaPrincipal$1.class
-janelaPrincipal.class
 modelagem\cleancity\SensorPh.class
+com\grupo04\cleancity\MainApp$2.class
 com\grupo04\cleancity\MainApp.class
 modelagem\cleancity\SensorSonar.class
 modelagem\cleancity\Caminhao.class
@@ -22,5 +21,6 @@ modelagem\cleancity\Equipe.class
 com\grupo04\cleancity\FXMLController.class
 modelagem\cleancity\Balanca.class
 modelagem\cleancity\Coleta.class
+com\grupo04\cleancity\MainApp$1.class
 modelagem\cleancity\DiaDaSemana.class
 modelagem\cleancity\Lixeira.class
