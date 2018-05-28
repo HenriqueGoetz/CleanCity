@@ -17,7 +17,6 @@ public class SensorPh extends Sensor {
     private float leituraPh = 7;
 
     public float getLeituraPh() {
-        this.lerPH();
         return leituraPh;
     }
 
