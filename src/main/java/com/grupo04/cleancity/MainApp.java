@@ -31,7 +31,7 @@ public class MainApp extends Application {
         //MapaGoogle mapa = new MapaGoogle();
        
         WebView browser = new WebView();
-        WebEngine webEngine = browser.getEngine();
+        final WebEngine webEngine = browser.getEngine();
         String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
         String contents = new String(Files.readAllBytes(Paths.get(path)));
         webEngine.loadContent(contents);
@@ -40,12 +40,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(browser,750,500);
         scene.getStylesheets().add("/styles/Styles.css");
         
-        stage.setTitle("JavaFX and Maven");
-        stage.setScene(scene);
-        //stage.show();
-        
-        VBox vBoxMapa = new VBox();
-        vBoxMapa.getChildren().addAll(browser);
+        stage.setTitle("CeanCity");
  
         final Label label = new Label();
         Button btn = new Button();
@@ -58,6 +53,7 @@ public class MainApp extends Application {
                 MouseButton button = event.getButton();
                 if(button==MouseButton.PRIMARY){
                     label.setText("PRIMARY button clicked on button");
+                    webEngine.executeScript("adicionarLixeira(new google.maps.LatLng(-30.0227, -51.1287))");
                 }else if(button==MouseButton.SECONDARY){
                     label.setText("SECONDARY button clicked on button");
                 }else if(button==MouseButton.MIDDLE){
@@ -71,22 +67,7 @@ public class MainApp extends Application {
          
         StackPane root = new StackPane();
         root.getChildren().add(hBox);
-        //root.getChildren().add(vBoxMapa);
          
-        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
- 
-            @Override
-            public void handle(MouseEvent event) {
-                MouseButton button = event.getButton();
-                if(button==MouseButton.PRIMARY){
-                    label.setText("PRIMARY button clicked");
-                }else if(button==MouseButton.SECONDARY){
-                    label.setText("SECONDARY button clicked");
-                }else if(button==MouseButton.MIDDLE){
-                    label.setText("MIDDLE button clicked");
-                }
-            }
-        });
         Scene cena = new Scene(root, 400, 300);
         stage.setScene(cena);
         stage.show();
