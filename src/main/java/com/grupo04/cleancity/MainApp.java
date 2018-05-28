@@ -8,6 +8,7 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,12 +24,15 @@ import javafx.stage.Stage;
 
 
 public class MainApp extends Application {
-
+    
+    //public static Boolean removeMarcador = false;
     @Override
     public void start(Stage stage) throws Exception {
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         
         //MapaGoogle mapa = new MapaGoogle();
+        
+        
        
         WebView browser = new WebView();
         final WebEngine webEngine = browser.getEngine();
@@ -42,28 +46,41 @@ public class MainApp extends Application {
         
         stage.setTitle("CeanCity");
  
-        final Label label = new Label();
-        Button btn = new Button();
-        btn.setText("Adicionar Lixeira");
-        btn.setMinWidth(100);
-        btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        Button btnAdd = new Button();
+        btnAdd.setText("Adicionar Lixeira");
+        btnAdd.setMinWidth(125);
+        btnAdd.setMinWidth(125);
+        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
  
             @Override
             public void handle(MouseEvent event) {
                 MouseButton button = event.getButton();
                 if(button==MouseButton.PRIMARY){
-                    label.setText("PRIMARY button clicked on button");
                     webEngine.executeScript("adicionarLixeira(new google.maps.LatLng(-30.0227, -51.1287))");
-                }else if(button==MouseButton.SECONDARY){
-                    label.setText("SECONDARY button clicked on button");
-                }else if(button==MouseButton.MIDDLE){
-                    label.setText("MIDDLE button clicked on button");
                 }
             }
         });
         
+        Button btnRmv = new Button();
+        btnRmv.setText("Remover Lixeira");
+        btnRmv.setMinWidth(125);
+        btnRmv.setMinWidth(125);
+        btnRmv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+ 
+            @Override
+            public void handle(MouseEvent event) {
+                MouseButton button = event.getButton();
+                if(button==MouseButton.PRIMARY){
+                    //removeMarcador = true;
+                     webEngine.executeScript("removeMarcador = true");
+                }
+            }
+        });
+        
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(btnAdd, btnRmv);
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(browser, btn, label);
+        hBox.getChildren().addAll(browser, vBox);
          
         StackPane root = new StackPane();
         root.getChildren().add(hBox);
