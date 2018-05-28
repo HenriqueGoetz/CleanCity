@@ -44,7 +44,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(browser,750,500);
         scene.getStylesheets().add("/styles/Styles.css");
         
-        stage.setTitle("CeanCity");
+        stage.setTitle("CleanCity");
  
         Button btnAdd = new Button();
         btnAdd.setText("Adicionar Lixeira");

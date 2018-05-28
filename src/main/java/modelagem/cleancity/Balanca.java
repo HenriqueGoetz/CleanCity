@@ -1,5 +1,7 @@
 package modelagem.cleancity;
 
+import java.util.Random;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,4 +24,12 @@ public class Balanca extends Sensor {
         this.leituraPeso = leituraPeso;
     }
     
+    public void lerBalanca(){
+    Random random = new Random();
+        setLeituraPeso((float) ((random.nextInt()%10) + this.leituraPeso));
+        if(this.leituraPeso > 100){
+            this.leituraPeso = 100;
+        }
+    
+    }
 }
