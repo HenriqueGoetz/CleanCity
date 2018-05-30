@@ -28,4 +28,7 @@ public class SensorSonar extends Sensor {
         setLeituraVolume((float) (this.leituraVolume + random.nextFloat() * 0.5));
     }
 
+    public void zerarVolume() {
+        setLeituraVolume(0);
+    }
 }

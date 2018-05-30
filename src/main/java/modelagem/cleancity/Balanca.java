@@ -27,4 +27,8 @@ public class Balanca extends Sensor {
         Random random = new Random();
         setLeituraPeso((float) ((random.nextInt() % 10) + this.leituraPeso));
     }
+    
+    public void zerarBalanca(){
+        setLeituraPeso(0);
+    }
 }

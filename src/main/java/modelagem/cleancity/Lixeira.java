@@ -32,9 +32,13 @@ public class Lixeira {
     }
 
     public void jogarNaLixeira() {
-
         this.sensorVolume.lerVolume();
         this.balanca.lerBalanca();
 
+    }
+
+    public void esvaziarLixeira() {
+        this.sensorVolume.zerarVolume();
+        this.balanca.zerarBalanca();
     }
 }
