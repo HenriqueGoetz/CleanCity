@@ -18,8 +18,7 @@ public class Caminhao {
     private Capacidade capacidade;
 
     public Caminhao() {
-        this.capacidade.setPeso(0);
-        this.capacidade.setVolume(0);
+        this.capacidade = new Capacidade();
     }
 
     public boolean isDisponibilidade() {
