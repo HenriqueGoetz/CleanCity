@@ -57,6 +57,18 @@ public class MainController implements Initializable {
         }
     }
 
+    public void verificarLixeiras(){
+        Random rand = new Random();
+        for(int i = 0; i < lixeiras.size(); i++){
+            if(rand.nextInt(3)==0){
+                lixeiras.get(i).jogarNaLixeira();
+                if(lixeiras.get(i).espacoPertoDoLimite()){
+                    System.out.print("Lixeira precisando ser esvaziada. Nº: ");
+                    System.out.println(i);
+                }
+            }
+        }
+    }
     public void removeLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("removeMarcador = true");

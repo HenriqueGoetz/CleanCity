@@ -5,8 +5,8 @@ package modelagem.cleancity;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author Henrique Goetz
  */
 public class Lixeira {
@@ -37,7 +37,13 @@ public class Lixeira {
     public void jogarNaLixeira() {
         this.sensorVolume.lerVolume();
         this.balanca.lerBalanca();
+    }
 
+    public boolean espacoPertoDoLimite() {
+        if (this.sensorVolume.getLeituraVolume() > 90 || this.balanca.getLeituraPeso() > 90) {
+            return true;
+        }
+        return false;
     }
 
     public void esvaziarLixeira() {
