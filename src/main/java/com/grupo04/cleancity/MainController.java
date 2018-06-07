@@ -30,8 +30,7 @@ public class MainController implements Initializable {
     @FXML
     WebView mapViewer;
 
-    ArrayList<Lixeira> lixeiras = new ArrayList<>();
-
+    ArrayList<Lixeira> lixeiras = new ArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -52,7 +51,8 @@ public class MainController implements Initializable {
             mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng(-30.0227, -51.1287))");
             double latitude = -30.0227;
             double longitude = -51.1287;
-            lixeiras.add(new Lixeira(latitude, longitude)); // Erro na definição da lista de lixeiras.
+
+            lixeiras.add(new Lixeira(latitude, longitude));
             System.out.println("Lixeira Adicionada com sucesso.");
         }
     }
@@ -60,7 +60,7 @@ public class MainController implements Initializable {
     public void removeLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("removeMarcador = true");
-            /*
+
             double latitude = -30.0227;
             double longitude = -51.1287;
 
@@ -69,7 +69,7 @@ public class MainController implements Initializable {
                     System.out.println("Lixeira Removida com sucesso.");
                     lixeiras.remove(i);
                 }
-            }*/
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ package modelagem.cleancity;
  */
 public class Lixeira {
 
-    private Capacidade capacidade;
+    private Capacidade capacidade = new Capacidade();
     private Coordenada coord;
     private SensorSonar sensorVolume = new SensorSonar();
     private Balanca balanca = new Balanca();
@@ -19,8 +19,7 @@ public class Lixeira {
     public Lixeira(double lati, double longi) {
         this.capacidade.setPeso(0);
         this.capacidade.setVolume(0);
-        this.coord.setLatitude(lati);
-        this.coord.setLongitude(longi);
+        this.coord = new Coordenada(lati, longi);
     }
 
     public Coordenada getCoord() {
