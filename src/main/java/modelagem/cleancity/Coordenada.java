@@ -30,7 +30,9 @@ public class Coordenada {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-    
-    
-    
+
+    public Coordenada(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

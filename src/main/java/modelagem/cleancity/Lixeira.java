@@ -23,6 +23,10 @@ public class Lixeira {
         this.coord.setLongitude(longi);
     }
 
+    public Coordenada getCoord() {
+        return coord;
+    }
+
     public float getPeso() {
         return balanca.getLeituraPeso();
     }
