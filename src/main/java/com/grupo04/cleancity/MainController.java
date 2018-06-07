@@ -24,6 +24,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import modelagem.cleancity.Coordenada;
 import modelagem.cleancity.Lixeira;
+import modelagem.cleancity.ReguladorPh;
 
 public class MainController implements Initializable {
 
@@ -31,6 +32,7 @@ public class MainController implements Initializable {
     WebView mapViewer;
 
     ArrayList<Lixeira> lixeiras = new ArrayList();
+    ArrayList<ReguladorPh> reguladoresPH = new ArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,6 +51,9 @@ public class MainController implements Initializable {
     public void addLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng(-30.0227, -51.1287))");
+
+            //É preciso pegar o valor de latitude e longitude da lixeira.
+
             double latitude = -30.0227;
             double longitude = -51.1287;
 
@@ -61,11 +66,8 @@ public class MainController implements Initializable {
         Random rand = new Random();
         for(int i = 0; i < lixeiras.size(); i++){
             if(rand.nextInt(3)==0){
-                lixeiras.get(i).jogarNaLixeira();
-                if(lixeiras.get(i).espacoPertoDoLimite()){
-                    System.out.print("Lixeira precisando ser esvaziada. Nº: ");
-                    System.out.println(i);
-                }
+                lixeiras.get(i).jogarNaLixeira(); // Simulando o sensor.
+                lixeiras.get(i).verificarLixeira();
             }
         }
     }
@@ -82,6 +84,30 @@ public class MainController implements Initializable {
                     lixeiras.remove(i);
                 }
             }
+        }
+    }
+
+    public void verificarReguladoresPh(){
+        Random rand = new Random();
+        for(int i = 0; i < reguladoresPH.size(); i++){
+            if(rand.nextInt(3)==0){
+                reguladoresPH.get(i).verificaPH(); // Simulando o sensor.
+                reguladoresPH.get(i).testarPH();
+            }
+        }
+
+    }
+
+    public void lacoDeControle(){
+
+        boolean fim = false;
+
+        while(!fim){
+
+         verificarLixeiras();
+
+         verificarReguladoresPh();
+
         }
     }
 }

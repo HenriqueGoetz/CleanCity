@@ -15,6 +15,10 @@ public class Balanca extends Sensor {
 
     private float leituraPeso;
 
+    public Balanca() {
+        this.setLeituraPeso(0);
+    }
+
     public float getLeituraPeso() {
         return leituraPeso;
     }

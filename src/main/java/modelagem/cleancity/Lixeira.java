@@ -39,11 +39,11 @@ public class Lixeira {
         this.balanca.lerBalanca();
     }
 
-    public boolean espacoPertoDoLimite() {
+    public void verificarLixeira() {
         if (this.sensorVolume.getLeituraVolume() > 90 || this.balanca.getLeituraPeso() > 90) {
-            return true;
+            System.out.println("Lixeira precisa ser esvaziada.");;
         }
-        return false;
+
     }
 
     public void esvaziarLixeira() {

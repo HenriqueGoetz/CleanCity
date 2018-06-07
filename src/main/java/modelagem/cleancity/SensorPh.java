@@ -24,7 +24,7 @@ public class SensorPh extends Sensor {
         this.leituraPh = leituraPh;
     }
 
-    private void lerPH() {
+    public void lerPH() {
         Random random = new Random();
         setLeituraPh((float) (random.nextGaussian() + this.leituraPh));
         if (this.leituraPh < 0) {

@@ -15,18 +15,22 @@ public class ReguladorPh {
     private Coordenada coord;
 
     public ReguladorPh(double lati, double longi) {
-        this.coord.setLatitude(lati);
-        this.coord.setLongitude(longi);
+        this.coord = new Coordenada(lati, longi);
     }
-    
+
     private void elevarPH(){
-        System.out.println("O ph está sendo elevado");
+        System.out.println("O ph está sendo elevado.");
+        sensorPh.setLeituraPh(7);
     }
     
     private void reduzirPH(){
-        System.out.println("O ph está sendo elevado");
+        System.out.println("O ph está sendo elevado.");
+        sensorPh.setLeituraPh(7);
     }
-    
+
+    public void verificaPH(){
+        sensorPh.lerPH();
+    }
     // TODO: Verificar RN para nível onde eleva/reduz o PH e nível para notificar
     public void testarPH(){
         float phAgora = sensorPh.getLeituraPh();
