@@ -33,5 +33,4 @@ public class SensorOxigenio extends Sensor {
             setLeituraOxigenioDissolvido(100);
         }
     }
-    
 }

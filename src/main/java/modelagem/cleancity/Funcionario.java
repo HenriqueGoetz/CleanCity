@@ -11,7 +11,11 @@ package modelagem.cleancity;
  * @author Henrique Goetz
  */
 public class Funcionario {
-    
+
+    public Funcionario(String nome) {
+        this.nome = nome;
+    }
+
     private String nome;
 
     public String getNome() {
