@@ -73,8 +73,11 @@ public class MainController implements Initializable {
     }
 
     public void addColeta(int hora, int min, DiaDaSemana[] dias) {
-        if (haCaminhoesDisponiveis())
-            coletas.add(new Coleta(hora, min, dias));
+        if (haCaminhoesDisponiveis()) { // Verifica se existe caminhão disponível para coleta.
+            // Sorteia uma equipe para realizar a coleta.
+            Random random = new Random();
+            coletas.add(new Coleta(hora, min, dias, equipes.get(random.nextInt(equipes.size()))));
+        }
     }
 
     public boolean haCaminhoesDisponiveis() {
@@ -133,18 +136,23 @@ public class MainController implements Initializable {
         }
     }
 
-    public void addFuncionario(){
-        funcionarios.add(new Funcionario("João"));
+    public void addFuncionario(String nome){
+        funcionarios.add(new Funcionario(nome));
     }
 
-    public void addEquipe(){
-        if(funcionarios.size()>0) {
+    public void addEquipe(int id){
+        if(funcionarios.size()>2) { //Existe pelo menos 3 funcionários
+            // Sorteia 3 funcionarios e cria uma equipe com os sorteados.
             Random random = new Random();
-            Funcionario[] func = new Funcionario[];
-            func[0] = funcionarios.get(random.nextInt(funcionarios.size()));
-            func[1] = funcionarios.get(random.nextInt(funcionarios.size()));
-            func[2] = funcionarios.get(random.nextInt(funcionarios.size()));
-            equipes.add(new Equipe(func));
+            Funcionario[] func = new Funcionario[0];
+            
+            do {
+                func[0] = funcionarios.get(random.nextInt(funcionarios.size()));
+                func[1] = funcionarios.get(random.nextInt(funcionarios.size()));
+                func[2] = funcionarios.get(random.nextInt(funcionarios.size()));
+            }while(func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
+
+            equipes.add(new Equipe(func, id));
         }
         
     }

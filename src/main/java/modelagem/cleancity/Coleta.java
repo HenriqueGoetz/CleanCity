@@ -35,10 +35,11 @@ public class Coleta {
         return dias;
     }
 
-    public Coleta(int hora, int minutos, DiaDaSemana[] dias) {
+    public Coleta(int hora, int minutos, DiaDaSemana[] dias, Equipe equipe) {
         this.hora = hora;
         this.minutos = minutos;
         this.dias = dias;
+        this.equipe = equipe;
     }
 
     public void setDias(DiaDaSemana[] dias) {

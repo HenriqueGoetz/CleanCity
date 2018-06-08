@@ -14,7 +14,8 @@ public class Equipe {
     private Funcionario[] funcionarios;
     private int id;
 
-    public Equipe(Funcionario[] funcionarios) {
+    public Equipe(Funcionario[] funcionarios, int id) {
         this.funcionarios = funcionarios;
+        this.id = id;
     }
 }
