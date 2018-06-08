@@ -22,9 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import modelagem.cleancity.Coordenada;
-import modelagem.cleancity.Lixeira;
-import modelagem.cleancity.ReguladorPh;
+import modelagem.cleancity.*;
 
 public class MainController implements Initializable {
 
@@ -33,6 +31,12 @@ public class MainController implements Initializable {
 
     ArrayList<Lixeira> lixeiras = new ArrayList();
     ArrayList<ReguladorPh> reguladoresPH = new ArrayList();
+    ArrayList<Caminhao> caminhoes = new ArrayList<>();
+    ArrayList<Coleta> coletas = new ArrayList<>();
+
+    public int hora = 0;
+    public int minuto = 0;
+    public int dia = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -62,15 +66,35 @@ public class MainController implements Initializable {
         }
     }
 
-    public void verificarLixeiras(){
+    public void addCaminhao() {
+        caminhoes.add(new Caminhao());
+    }
+
+    public void addColeta(int hora, int min, DiaDaSemana[] dias) {
+        if (haCaminhoesDisponiveis())
+            coletas.add(new Coleta(hora, min, dias));
+    }
+
+    public boolean haCaminhoesDisponiveis() {
+        for (int i = 0; i < caminhoes.size(); i++) {
+            if (caminhoes.get(i).isDisponibilidade()) {
+                caminhoes.get(i).setDisponibilidade(false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void verificarLixeiras() {
         Random rand = new Random();
-        for(int i = 0; i < lixeiras.size(); i++){
-            if(rand.nextInt(3)==0){
+        for (int i = 0; i < lixeiras.size(); i++) {
+            if (rand.nextInt(3) == 0) {
                 lixeiras.get(i).jogarNaLixeira(); // Simulando o sensor.
                 lixeiras.get(i).verificarLixeira();
             }
         }
     }
+
     public void removeLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("removeMarcador = true");
@@ -87,10 +111,10 @@ public class MainController implements Initializable {
         }
     }
 
-    public void verificarReguladoresPh(){
+    public void verificarReguladoresPh() {
         Random rand = new Random();
-        for(int i = 0; i < reguladoresPH.size(); i++){
-            if(rand.nextInt(3)==0){
+        for (int i = 0; i < reguladoresPH.size(); i++) {
+            if (rand.nextInt(3) == 0) {
                 reguladoresPH.get(i).verificaPH(); // Simulando o sensor.
                 reguladoresPH.get(i).testarPH();
             }
@@ -98,16 +122,45 @@ public class MainController implements Initializable {
 
     }
 
-    public void lacoDeControle(){
+    public void verificarColeta() {
+        for (int i = 0; i < coletas.size(); i++) {
+            if (coletas.get(i).getMinutos() == this.minuto && coletas.get(i).getHora() == this.hora && coletas.get(i).EhDiaDaColeta(dia)) {
+                //Criar Funcao de realizacao da Coleta.
+                // coletas.get(i).realizarColeta();
+            }
+        }
+    }
+
+    public void recalculaTempo() {
+
+        if (this.minuto == 59 && this.hora == 23) {
+            this.dia++;
+            this.hora = 0;
+            this.minuto = 0;
+        } else if (this.minuto == 59) {
+            this.hora++;
+            this.minuto = 0;
+        } else {
+            this.minuto++;
+        }
+        System.out.println("Dia: " + this.dia);
+        System.out.println("Hora: " + this.hora);
+        System.out.println("Minuto :" + this.minuto);
+    }
+
+    public void lacoDeControle() {
 
         boolean fim = false;
 
-        while(!fim){
+        while (!fim) {
 
-         verificarLixeiras();
+            recalculaTempo();
 
-         verificarReguladoresPh();
+            verificarLixeiras();
 
+            verificarReguladoresPh();
+
+            verificarColeta();
         }
     }
 }

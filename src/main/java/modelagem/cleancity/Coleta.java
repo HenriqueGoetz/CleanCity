@@ -35,6 +35,12 @@ public class Coleta {
         return dias;
     }
 
+    public Coleta(int hora, int minutos, DiaDaSemana[] dias) {
+        this.hora = hora;
+        this.minutos = minutos;
+        this.dias = dias;
+    }
+
     public void setDias(DiaDaSemana[] dias) {
         this.dias = dias;
     }
@@ -42,7 +48,15 @@ public class Coleta {
     public void setMinutos(int minutos) {
         this.minutos = minutos;
     }
-    
+
+    public boolean EhDiaDaColeta(int dia){
+        for(int i=0; i < this.dias.length; i++){
+            if(this.dias[i].equals(dia))
+                return true;
+        }
+        return false;
+    }
+
     public void agendarColeta(int hour, int min, DiaDaSemana[] days){
         this.setHora(hour);
         this.setMinutos(min);
