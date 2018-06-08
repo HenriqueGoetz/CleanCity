@@ -24,12 +24,15 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import modelagem.cleancity.*;
 
+import static modelagem.cleancity.DiaDaSemana.*;
+
 public class MainController implements Initializable {
 
     @FXML
     WebView mapViewer;
 
     ArrayList<Lixeira> lixeiras = new ArrayList();
+    ArrayList<Lixeira> lixeirasCheias = new ArrayList();
     ArrayList<ReguladorPh> reguladoresPH = new ArrayList();
     ArrayList<Caminhao> caminhoes = new ArrayList<>();
     ArrayList<Coleta> coletas = new ArrayList<>();
@@ -95,7 +98,9 @@ public class MainController implements Initializable {
         for (int i = 0; i < lixeiras.size(); i++) {
             if (rand.nextInt(3) == 0) {
                 lixeiras.get(i).jogarNaLixeira(); // Simulando o sensor.
-                lixeiras.get(i).verificarLixeira();
+                if (lixeiras.get(i).verificarLixeira()) {
+                    lixeirasCheias.add(lixeiras.get(i));
+                }
             }
         }
     }
@@ -130,37 +135,43 @@ public class MainController implements Initializable {
     public void verificarColeta() {
         for (int i = 0; i < coletas.size(); i++) {
             if (coletas.get(i).getMinutos() == this.minuto && coletas.get(i).getHora() == this.hora && coletas.get(i).EhDiaDaColeta(dia)) {
-                //Criar Funcao de realizacao da Coleta.
-                // coletas.get(i).realizarColeta();
+                realizarColeta();
             }
         }
     }
 
-    public void addFuncionario(String nome){
+    public void addFuncionario(String nome) {
         funcionarios.add(new Funcionario(nome));
     }
 
-    public void addEquipe(int id){
-        if(funcionarios.size()>2) { //Existe pelo menos 3 funcionários
+    public void addEquipe(int id) {
+        if (funcionarios.size() > 2) { //Existe pelo menos 3 funcionários
             // Sorteia 3 funcionarios e cria uma equipe com os sorteados.
             Random random = new Random();
             Funcionario[] func = new Funcionario[0];
-            
+
             do {
                 func[0] = funcionarios.get(random.nextInt(funcionarios.size()));
                 func[1] = funcionarios.get(random.nextInt(funcionarios.size()));
                 func[2] = funcionarios.get(random.nextInt(funcionarios.size()));
-            }while(func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
+            } while (func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
 
             equipes.add(new Equipe(func, id));
         }
-        
+
+    }
+
+    public void realizarColeta() {
+        this.lixeirasCheias.clear();
     }
 
     public void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
-            this.dia++;
+            if (this.dia != 6)
+                this.dia++;
+            else
+                this.dia = 0;
             this.hora = 0;
             this.minuto = 0;
         } else if (this.minuto == 59) {
@@ -177,6 +188,38 @@ public class MainController implements Initializable {
     public void lacoDeControle() {
 
         boolean fim = false;
+
+        DiaDaSemana[] dias1 = new DiaDaSemana[0];
+        DiaDaSemana[] dias2 = new DiaDaSemana[0];
+
+        dias1[0] = SEG;
+        dias1[1] = QUA;
+        dias1[2] = SEX;
+        dias2[0] = DOM;
+        dias2[1] = TER;
+        dias2[2] = QUI;
+
+        addCaminhao();
+        addCaminhao();
+        addCaminhao();
+        addCaminhao();
+
+        addFuncionario("Joao");
+        addFuncionario("Joaguim");
+        addFuncionario("Maria");
+        addFuncionario("Pedro");
+        addFuncionario("Marcos");
+
+        addEquipe(0);
+        addEquipe(1);
+        addEquipe(2);
+
+        addColeta(6, 30, dias1);
+        addColeta(12, 00, dias1);
+        addColeta(18, 30, dias1);
+        addColeta(6, 30, dias2);
+        addColeta(12, 00, dias2);
+        addColeta(18, 30, dias2);
 
         while (!fim) {
 
