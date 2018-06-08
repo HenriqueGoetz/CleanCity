@@ -208,15 +208,21 @@ public class MainController implements Initializable {
         addCaminhao();
         addCaminhao();
 
+        System.out.println("Caminhoes criados.");
+
         addFuncionario("Joao");
         addFuncionario("Joaguim");
         addFuncionario("Maria");
         addFuncionario("Pedro");
         addFuncionario("Marcos");
 
+        System.out.println("Funcionários criados.");
+
         addEquipe(0);
         addEquipe(1);
         addEquipe(2);
+
+        System.out.println("Equipes criadas.");
 
         addColeta(6, 30, dias1);
         addColeta(12, 00, dias1);
@@ -224,6 +230,8 @@ public class MainController implements Initializable {
         addColeta(6, 30, dias2);
         addColeta(12, 00, dias2);
         addColeta(18, 30, dias2);
+
+        System.out.println("Coletas criadas");
 
         while (!fim) {
 
