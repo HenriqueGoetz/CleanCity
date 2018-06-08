@@ -13,5 +13,8 @@ package modelagem.cleancity;
 public class Equipe {
     private Funcionario[] funcionarios;
     private int id;
-    
+
+    public Equipe(Funcionario[] funcionarios) {
+        this.funcionarios = funcionarios;
+    }
 }

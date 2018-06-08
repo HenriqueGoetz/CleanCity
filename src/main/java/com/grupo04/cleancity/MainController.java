@@ -33,6 +33,8 @@ public class MainController implements Initializable {
     ArrayList<ReguladorPh> reguladoresPH = new ArrayList();
     ArrayList<Caminhao> caminhoes = new ArrayList<>();
     ArrayList<Coleta> coletas = new ArrayList<>();
+    ArrayList<Equipe> equipes = new ArrayList<>();
+    ArrayList<Funcionario> funcionarios = new ArrayList<>();
 
     public int hora = 0;
     public int minuto = 0;
@@ -129,6 +131,22 @@ public class MainController implements Initializable {
                 // coletas.get(i).realizarColeta();
             }
         }
+    }
+
+    public void addFuncionario(){
+        funcionarios.add(new Funcionario("João"));
+    }
+
+    public void addEquipe(){
+        if(funcionarios.size()>0) {
+            Random random = new Random();
+            Funcionario[] func = new Funcionario[];
+            func[0] = funcionarios.get(random.nextInt(funcionarios.size()));
+            func[1] = funcionarios.get(random.nextInt(funcionarios.size()));
+            func[2] = funcionarios.get(random.nextInt(funcionarios.size()));
+            equipes.add(new Equipe(func));
+        }
+        
     }
 
     public void recalculaTempo() {
