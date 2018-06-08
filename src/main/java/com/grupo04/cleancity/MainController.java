@@ -80,6 +80,8 @@ public class MainController implements Initializable {
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
             coletas.add(new Coleta(hora, min, dias, equipes.get(random.nextInt(equipes.size()))));
+        }else{
+            System.out.println("Não há caminhões disponíveis.");
         }
     }
 
@@ -157,6 +159,8 @@ public class MainController implements Initializable {
             } while (func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
 
             equipes.add(new Equipe(func, id));
+        }else{
+            System.out.println("Não há funcionários suficientes para criar uma equipe.");
         }
 
     }
