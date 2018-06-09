@@ -1,28 +1,24 @@
 package com.grupo04.cleancity;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import modelagem.cleancity.*;
+
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import modelagem.cleancity.*;
 
 import static modelagem.cleancity.DiaDaSemana.*;
 
@@ -31,23 +27,23 @@ public class MainController implements Initializable {
     @FXML
     WebView mapViewer;
 
-    ArrayList<Lixeira> lixeiras = new ArrayList();
-    ArrayList<Lixeira> lixeirasCheias = new ArrayList();
-    ArrayList<ReguladorPh> reguladoresPH = new ArrayList();
-    ArrayList<Caminhao> caminhoes = new ArrayList<>();
-    ArrayList<Coleta> coletas = new ArrayList<>();
-    ArrayList<Equipe> equipes = new ArrayList<>();
-    ArrayList<Funcionario> funcionarios = new ArrayList<>();
+    private List<Lixeira> lixeiras = new ArrayList<>();
+    private List<Lixeira> lixeirasCheias = new ArrayList<>();
+    private List<ReguladorPh> reguladoresPH = new ArrayList<>();
+    private List<Caminhao> caminhoes = new ArrayList<>();
+    private List<Coleta> coletas = new ArrayList<>();
+    private List<Equipe> equipes = new ArrayList<>();
+    private List<Funcionario> funcionarios = new ArrayList<>();
 
-    public int hora = 0;
-    public int minuto = 0;
-    public int dia = 0;
+    private int hora = 0;
+    private int minuto = 0;
+    private int dia = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         final WebEngine webEngine = mapViewer.getEngine();
         String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
-        String contents = null;
+        String contents;
 
         try {
             contents = new String(Files.readAllBytes(Paths.get(path)));
@@ -71,11 +67,83 @@ public class MainController implements Initializable {
         }
     }
 
-    public void addCaminhao() {
+    private void addCaminhao() {
         caminhoes.add(new Caminhao());
     }
 
-    public void addColeta(int hora, int min, DiaDaSemana[] dias) {
+    public void onAddColetaClick(ActionEvent event) {
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle("Adicionar Coleta");
+        dialog.setHeaderText("Especifique os horários");
+
+        ButtonType addButton = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField hora = new TextField();
+        hora.setPromptText("Hora");
+        setIntegerOnly(hora);
+        TextField minutos = new TextField();
+        minutos.setPromptText("Minutos");
+        setIntegerOnly(minutos);
+        TextField dias = new TextField();
+        dias.setPromptText("Dias");
+        setIntegerListOnly(dias);
+
+        grid.add(new Label("Hora:"), 0, 0);
+        grid.add(hora, 1, 0);
+        grid.add(new Label("Minutos:"), 0, 1);
+        grid.add(minutos, 1, 1);
+        grid.add(new Label("Dias (1-7, separados por virgulas):"), 0, 2);
+        grid.add(dias, 1, 2);
+
+        Node nodeAddButton = dialog.getDialogPane().lookupButton(addButton);
+        nodeAddButton.setDisable(true);
+
+        hora.textProperty().addListener(value -> inputColetaChecker(hora, minutos, dias, nodeAddButton));
+        minutos.textProperty().addListener(value -> inputColetaChecker(hora, minutos, dias, nodeAddButton));
+        dias.textProperty().addListener(value -> inputColetaChecker(hora, minutos, dias, nodeAddButton));
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButton) {
+                return new String[]{hora.getText(), minutos.getText(), dias.getText()};
+            }
+            return null;
+        });
+
+        Optional<String[]> result = dialog.showAndWait();
+
+        if(result.isPresent()) {
+            int h = Integer.valueOf(result.get()[0]);
+            int m = Integer.valueOf(result.get()[1]);
+            String[] diasString = result.get()[2].split(",");
+            DiaDaSemana[] d = new DiaDaSemana[diasString.length];
+
+            int i = 0;
+            for(String s : diasString) {
+                d[i++] = DiaDaSemana.fromInteger(Integer.valueOf(s));
+            }
+
+            addColeta(h, m, d);
+        }
+    }
+
+    private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
+        if(!hora.getText().isEmpty() && !min.getText().isEmpty() &&
+                dias.getText().matches("[1-7] *([,] *[1-7] *)*")) {
+            btn.setDisable(false);
+        } else {
+            btn.setDisable(true);
+        }
+    }
+
+    private void addColeta(int hora, int min, DiaDaSemana[] dias) {
         if (haCaminhoesDisponiveis()) { // Verifica se existe caminhão disponível para coleta.
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
@@ -85,23 +153,23 @@ public class MainController implements Initializable {
         }
     }
 
-    public boolean haCaminhoesDisponiveis() {
-        for (int i = 0; i < caminhoes.size(); i++) {
-            if (caminhoes.get(i).isDisponibilidade()) {
-                caminhoes.get(i).setDisponibilidade(false);
+    private boolean haCaminhoesDisponiveis() {
+        for (Caminhao caminhoe : caminhoes) {
+            if (caminhoe.isDisponibilidade()) {
+                caminhoe.setDisponibilidade(false);
                 return true;
             }
         }
         return false;
     }
 
-    public void verificarLixeiras() {
+    private void verificarLixeiras() {
         Random rand = new Random();
-        for (int i = 0; i < lixeiras.size(); i++) {
+        for (Lixeira lixeira : lixeiras) {
             if (rand.nextInt(3) == 0) {
-                lixeiras.get(i).jogarNaLixeira(); // Simulando o sensor.
-                if (lixeiras.get(i).verificarLixeira()) {
-                    lixeirasCheias.add(lixeiras.get(i));
+                lixeira.jogarNaLixeira(); // Simulando o sensor.
+                if (lixeira.verificarLixeira()) {
+                    lixeirasCheias.add(lixeira);
                 }
             }
         }
@@ -123,34 +191,59 @@ public class MainController implements Initializable {
         }
     }
 
-    public void verificarReguladoresPh() {
+    private void verificarReguladoresPh() {
         Random rand = new Random();
-        for (int i = 0; i < reguladoresPH.size(); i++) {
+        for (ReguladorPh aReguladoresPH : reguladoresPH) {
             if (rand.nextInt(3) == 0) {
-                reguladoresPH.get(i).verificaPH(); // Simulando o sensor.
-                reguladoresPH.get(i).testarPH();
+                aReguladoresPH.verificaPH(); // Simulando o sensor.
+                aReguladoresPH.testarPH();
             }
         }
 
     }
 
-    public void verificarColeta() {
-        for (int i = 0; i < coletas.size(); i++) {
-            if (coletas.get(i).getMinutos() == this.minuto && coletas.get(i).getHora() == this.hora && coletas.get(i).EhDiaDaColeta(dia)) {
+    private void verificarColeta() {
+        for (Coleta coleta : coletas) {
+            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(dia)) {
                 realizarColeta();
             }
         }
     }
 
-    public void addFuncionario(String nome) {
+    public void onAddFuncionarioClick(ActionEvent event) {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Funcionário");
+        inputDialog.setHeaderText("Digite o nome do funcionário:");
+        inputDialog.getEditor().setPromptText("Nome");
+
+        inputDialog.showAndWait().ifPresent(name -> {
+            if(!name.isEmpty())
+                addFuncionario(name);
+        });
+    }
+
+    private void addFuncionario(String nome) {
         funcionarios.add(new Funcionario(nome));
     }
 
-    public void addEquipe(int id) {
+    public void onAddEquipeClick(ActionEvent event) {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Equipe");
+        inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
+        inputDialog.getEditor().setPromptText("ID da Equipe");
+        setIntegerOnly(inputDialog.getEditor());
+
+        inputDialog.showAndWait().ifPresent(id -> {
+            if(!id.isEmpty())
+                addEquipe(Integer.parseInt(id));
+        });
+    }
+
+    private void addEquipe(int id) {
         if (funcionarios.size() > 2) { //Existe pelo menos 3 funcionários
             // Sorteia 3 funcionarios e cria uma equipe com os sorteados.
             Random random = new Random();
-            Funcionario[] func = new Funcionario[0];
+            Funcionario[] func = new Funcionario[3];
 
             do {
                 func[0] = funcionarios.get(random.nextInt(funcionarios.size()));
@@ -159,17 +252,17 @@ public class MainController implements Initializable {
             } while (func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
 
             equipes.add(new Equipe(func, id));
-        }else{
+        } else {
             System.out.println("Não há funcionários suficientes para criar uma equipe.");
         }
 
     }
 
-    public void realizarColeta() {
+    private void realizarColeta() {
         this.lixeirasCheias.clear();
     }
 
-    public void recalculaTempo() {
+    private void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
             if (this.dia != 6)
@@ -193,8 +286,8 @@ public class MainController implements Initializable {
 
         boolean fim = false;
 
-        DiaDaSemana[] dias1 = new DiaDaSemana[0];
-        DiaDaSemana[] dias2 = new DiaDaSemana[0];
+        DiaDaSemana[] dias1 = new DiaDaSemana[3];
+        DiaDaSemana[] dias2 = new DiaDaSemana[3];
 
         dias1[0] = SEG;
         dias1[1] = QUA;
@@ -243,5 +336,21 @@ public class MainController implements Initializable {
 
             verificarColeta();
         }
+    }
+
+    private void setIntegerOnly(TextInputControl input) {
+        input.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                input.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+    }
+
+    private void setIntegerListOnly(TextInputControl input) {
+        input.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[1-7 ,]*")) {
+                input.setText(newValue.replaceAll("[^1-7 ,]", ""));
+            }
+        });
     }
 }
