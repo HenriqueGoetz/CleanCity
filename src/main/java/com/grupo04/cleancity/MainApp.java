@@ -45,15 +45,6 @@ public class MainApp extends Application {
     public static void main(String[] args) {
 
         MainController mController = new MainController();
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mController.lacoDeControle();
-            }
-        });
-
-        thread.start();
         launch(args);
     }
 }

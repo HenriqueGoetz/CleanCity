@@ -1,5 +1,7 @@
 package com.grupo04.cleancity;
 
+import com.grupo04.cleancity.scheduler.Schedulable;
+import com.grupo04.cleancity.scheduler.Scheduler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,9 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static modelagem.cleancity.DiaDaSemana.*;
+public class MainController implements Initializable, Schedulable {
 
-public class MainController implements Initializable {
+    private Scheduler scheduler;
 
     @FXML
     WebView mapViewer;
@@ -62,6 +64,52 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.scheduler = new Scheduler(this);
+        scheduler.start();
+
+                /* Casos de teste
+        DiaDaSemana[] dias1 = new DiaDaSemana[3];
+        DiaDaSemana[] dias2 = new DiaDaSemana[3];
+
+        dias1[0] = SEG;
+        dias1[1] = QUA;
+        dias1[2] = SEX;
+        dias2[0] = DOM;
+        dias2[1] = TER;
+        dias2[2] = QUI;
+
+        addCaminhao();
+        addCaminhao();
+        addCaminhao();
+        addCaminhao();
+
+        System.out.println("Caminhoes criados.");
+
+        addFuncionario("Joao");
+        addFuncionario("Joaguim");
+        addFuncionario("Maria");
+        addFuncionario("Pedro");
+        addFuncionario("Marcos");
+
+        System.out.println("Funcionários criados.");
+
+        addEquipe(0);
+        addEquipe(1);
+        addEquipe(2);
+
+        System.out.println("Equipes criadas.");
+
+        addColeta(6, 30, dias1);
+        addColeta(12, 00, dias1);
+        addColeta(18, 30, dias1);
+        addColeta(6, 30, dias2);
+        addColeta(12, 00, dias2);
+        addColeta(18, 30, dias2);
+
+        System.out.println("Coletas criadas");
+
+        */
     }
 
 
@@ -302,72 +350,21 @@ public class MainController implements Initializable {
         System.out.println("Minuto :" + this.minuto);
     }
 
-    public void imprimeTempo(){
+    public void imprimeTempo() {
         //Atualizar o tempo na janela.
-        lblMin.setText(toString().valueOf(this.minuto));
-        lblHora.setText(toString().valueOf(this.hora));
-        lblDia.setText(toString().valueOf(this.dia));
+        lblMin.setText(String.valueOf(this.minuto));
+        lblHora.setText(String.valueOf(this.hora));
+        lblDia.setText(String.valueOf(this.dia));
 
     }
-    public void lacoDeControle() {
 
-        boolean fim = false;
-
-        /* Casos de teste
-        DiaDaSemana[] dias1 = new DiaDaSemana[3];
-        DiaDaSemana[] dias2 = new DiaDaSemana[3];
-
-        dias1[0] = SEG;
-        dias1[1] = QUA;
-        dias1[2] = SEX;
-        dias2[0] = DOM;
-        dias2[1] = TER;
-        dias2[2] = QUI;
-
-        addCaminhao();
-        addCaminhao();
-        addCaminhao();
-        addCaminhao();
-
-        System.out.println("Caminhoes criados.");
-
-        addFuncionario("Joao");
-        addFuncionario("Joaguim");
-        addFuncionario("Maria");
-        addFuncionario("Pedro");
-        addFuncionario("Marcos");
-
-        System.out.println("Funcionários criados.");
-
-        addEquipe(0);
-        addEquipe(1);
-        addEquipe(2);
-
-        System.out.println("Equipes criadas.");
-
-        addColeta(6, 30, dias1);
-        addColeta(12, 00, dias1);
-        addColeta(18, 30, dias1);
-        addColeta(6, 30, dias2);
-        addColeta(12, 00, dias2);
-        addColeta(18, 30, dias2);
-
-        System.out.println("Coletas criadas");
-
-        */
-
-        while (!fim) {
-
-            recalculaTempo();
-
-            imprimeTempo();
-
-            verificarLixeiras();
-
-            verificarReguladoresPh();
-
-            verificarColeta();
-        }
+    @Override
+    public void loop(ActionEvent event) {
+        recalculaTempo();
+        imprimeTempo();
+        verificarLixeiras();
+        verificarReguladoresPh();
+        verificarColeta();
     }
 
     private void setIntegerOnly(TextInputControl input) {
