@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import modelagem.cleancity.*;
+import netscape.javascript.JSObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class MainController implements Initializable {
     @FXML
     WebView mapViewer;
 
-    private List<Lixeira> lixeiras = new ArrayList<>();
+    private static List<Lixeira> lixeiras = new ArrayList<>();
     private List<Lixeira> lixeirasCheias = new ArrayList<>();
     private List<ReguladorPh> reguladoresPH = new ArrayList<>();
     private List<Caminhao> caminhoes = new ArrayList<>();
@@ -39,6 +40,8 @@ public class MainController implements Initializable {
     private int minuto = 0;
     private int dia = 0;
 
+    JavaApp app = new JavaApp();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         final WebEngine webEngine = mapViewer.getEngine();
@@ -48,23 +51,37 @@ public class MainController implements Initializable {
         try {
             contents = new String(Files.readAllBytes(Paths.get(path)));
             webEngine.loadContent(contents);
+            JSObject window = (JSObject)webEngine.executeScript("window");
+            window.setMember("app",app);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+    public static Lixeira getLixeiraById(int id){
+        for(Lixeira lixeira : lixeiras){
+            if(lixeira.getId() == id){
+                return lixeira;
+            }
+        }
+        return null;
+    }
+
     public void addLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng(-30.0227, -51.1287))");
+            mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng())");
 
-            //É preciso pegar o valor de latitude e longitude da lixeira.
+            Coordenada coordenada = app.getCoordenadaRecebida();
 
-            double latitude = -30.0227;
-            double longitude = -51.1287;
-
-            lixeiras.add(new Lixeira(latitude, longitude));
+            lixeiras.add(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
             System.out.println("Lixeira Adicionada com sucesso.");
         }
+    }
+
+    public static void reposicionaLixeira(Lixeira lixeira, Coordenada coord){
+        lixeira.getCoord().setLatitude(coord.getLatitude());
+        lixeira.getCoord().setLongitude(coord.getLongitude());
     }
 
     private void addCaminhao() {
@@ -177,17 +194,23 @@ public class MainController implements Initializable {
 
     public void removeLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("removeMarcador = true");
+            //mapViewer.getEngine().executeScript("removeMarcador = true");
 
-            double latitude = -30.0227;
-            double longitude = -51.1287;
+            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
+            mapViewer.getEngine().executeScript("marcadorSel =  null;");
 
-            for (int i = 0; i < lixeiras.size(); i++) {
+            int indice = lixeiras.indexOf(getLixeiraById(app.getIdRecebido()));
+            lixeiras.remove(indice);
+            System.out.println("Lixeira Removida com sucesso.");
+            //double latitude = -30.0227;
+            //double longitude = -51.1287;
+
+            /*for (int i = 0; i < lixeiras.size(); i++) {
                 if (lixeiras.get(i).getCoord().equals(new Coordenada(latitude, longitude))) {
                     System.out.println("Lixeira Removida com sucesso.");
                     lixeiras.remove(i);
                 }
-            }
+            }*/
         }
     }
 

@@ -15,11 +15,20 @@ public class Lixeira {
     private Coordenada coord;
     private SensorSonar sensorVolume = new SensorSonar();
     private Balanca balanca = new Balanca();
+    private int id;
 
     public Lixeira(double lati, double longi) {
         this.capacidade.setPeso(0);
         this.capacidade.setVolume(0);
         this.coord = new Coordenada(lati, longi);
+    }
+
+    // Overload do construtor
+    public Lixeira(double lati, double longi, int id) {
+        this.capacidade.setPeso(0);
+        this.capacidade.setVolume(0);
+        this.coord = new Coordenada(lati, longi);
+        this.id = id;
     }
 
     public Coordenada getCoord() {
@@ -51,4 +60,13 @@ public class Lixeira {
         this.sensorVolume.zerarVolume();
         this.balanca.zerarBalanca();
     }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
 }
