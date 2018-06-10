@@ -27,6 +27,12 @@ public class MainController implements Initializable {
 
     @FXML
     WebView mapViewer;
+    @FXML
+    Label lblMin;
+    @FXML
+    Label lblHora;
+    @FXML
+    Label lblDia;
 
     private static List<Lixeira> lixeiras = new ArrayList<>();
     private List<Lixeira> lixeirasCheias = new ArrayList<>();
@@ -51,17 +57,17 @@ public class MainController implements Initializable {
         try {
             contents = new String(Files.readAllBytes(Paths.get(path)));
             webEngine.loadContent(contents);
-            JSObject window = (JSObject)webEngine.executeScript("window");
-            window.setMember("app",app);
+            JSObject window = (JSObject) webEngine.executeScript("window");
+            window.setMember("app", app);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-    public static Lixeira getLixeiraById(int id){
-        for(Lixeira lixeira : lixeiras){
-            if(lixeira.getId() == id){
+    public static Lixeira getLixeiraById(int id) {
+        for (Lixeira lixeira : lixeiras) {
+            if (lixeira.getId() == id) {
                 return lixeira;
             }
         }
@@ -79,7 +85,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public static void reposicionaLixeira(Lixeira lixeira, Coordenada coord){
+    public static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
         lixeira.getCoord().setLatitude(coord.getLatitude());
         lixeira.getCoord().setLongitude(coord.getLongitude());
     }
@@ -136,14 +142,14 @@ public class MainController implements Initializable {
 
         Optional<String[]> result = dialog.showAndWait();
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             int h = Integer.valueOf(result.get()[0]);
             int m = Integer.valueOf(result.get()[1]);
             String[] diasString = result.get()[2].split(",");
             DiaDaSemana[] d = new DiaDaSemana[diasString.length];
 
             int i = 0;
-            for(String s : diasString) {
+            for (String s : diasString) {
                 d[i++] = DiaDaSemana.fromInteger(Integer.valueOf(s));
             }
 
@@ -152,7 +158,7 @@ public class MainController implements Initializable {
     }
 
     private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
-        if(!hora.getText().isEmpty() && !min.getText().isEmpty() &&
+        if (!hora.getText().isEmpty() && !min.getText().isEmpty() &&
                 dias.getText().matches("[1-7] *([,] *[1-7] *)*")) {
             btn.setDisable(false);
         } else {
@@ -165,7 +171,7 @@ public class MainController implements Initializable {
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
             coletas.add(new Coleta(hora, min, dias, equipes.get(random.nextInt(equipes.size()))));
-        }else{
+        } else {
             System.out.println("Não há caminhões disponíveis.");
         }
     }
@@ -231,7 +237,7 @@ public class MainController implements Initializable {
         inputDialog.getEditor().setPromptText("Nome");
 
         inputDialog.showAndWait().ifPresent(name -> {
-            if(!name.isEmpty())
+            if (!name.isEmpty())
                 addFuncionario(name);
         });
     }
@@ -248,7 +254,7 @@ public class MainController implements Initializable {
         setIntegerOnly(inputDialog.getEditor());
 
         inputDialog.showAndWait().ifPresent(id -> {
-            if(!id.isEmpty())
+            if (!id.isEmpty())
                 addEquipe(Integer.parseInt(id));
         });
     }
@@ -296,6 +302,13 @@ public class MainController implements Initializable {
         System.out.println("Minuto :" + this.minuto);
     }
 
+    public void imprimeTempo(){
+        //Atualizar o tempo na janela.
+        lblMin.setText(toString().valueOf(this.minuto));
+        lblHora.setText(toString().valueOf(this.hora));
+        lblDia.setText(toString().valueOf(this.dia));
+
+    }
     public void lacoDeControle() {
 
         boolean fim = false;
@@ -346,6 +359,8 @@ public class MainController implements Initializable {
         while (!fim) {
 
             recalculaTempo();
+
+            imprimeTempo();
 
             verificarLixeiras();
 

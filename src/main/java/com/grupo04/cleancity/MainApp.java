@@ -52,7 +52,7 @@ public class MainApp extends Application {
                 mController.lacoDeControle();
             }
         });
-        
+
         thread.start();
         launch(args);
     }

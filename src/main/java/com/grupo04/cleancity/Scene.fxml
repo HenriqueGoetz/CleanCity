@@ -46,6 +46,12 @@
             <Button layoutX="36.0" layoutY="57.0" mnemonicParsing="false" onMouseClicked="#removeLixeira" prefHeight="31.0" prefWidth="129.0" text="Remover Lixeira" />
             <Button layoutX="36.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#addLixeira" text="Adicionar Lixeira" />
             <Button layoutX="36.0" layoutY="99.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="129.0" text="Novo Caminhão" />
+            <Label id="lblDia" fx:id="lblDia" layoutX="17.0" layoutY="645.0" text="0" />
+            <Label layoutX="11.0" layoutY="624.0" text="Dia" />
+            <Label layoutX="57.0" layoutY="624.0" text="Hora" />
+            <Label id="lblHora" fx:id="lblHora" layoutX="65.0" layoutY="645.0" text="00" />
+            <Label layoutX="113.0" layoutY="624.0" text="Min" />
+            <Label fx:id="lblMin" layoutX="117.0" layoutY="645.0" text="00" />
          </children>
       </Pane>
     </children>
