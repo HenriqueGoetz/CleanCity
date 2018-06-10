@@ -80,14 +80,27 @@ public class Database {
         this.coletas.add(coleta);
     }
 
+    public void addRegulador(ReguladorPh regulador) { this.reguladoresPH.add(regulador); }
+
     public void removerLixeira(Lixeira lixeira) {
         this.lixeiras.remove(lixeira);
     }
+
+    public void removerRegulador(ReguladorPh regulador){ this.reguladoresPH.remove(regulador); }
 
     public Lixeira getLixeiraById(int id) {
         for (Lixeira lixeira : Database.getInstance().getLixeiras()) {
             if (lixeira.getId() == id)
                 return lixeira;
+        }
+
+        return null;
+    }
+
+    public ReguladorPh getReguladorById(int id) {
+        for (ReguladorPh regulador : Database.getInstance().getReguladoresPH()) {
+            if (regulador.getId() == id)
+                return regulador;
         }
 
         return null;

@@ -85,11 +85,26 @@ public class MainController implements Initializable, Schedulable {
     }
 
     public void onAddReguladorClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            mapViewer.getEngine().executeScript("adicionarRegulador()");
 
+            Coordenada coordenada = app.getCoordenadaRecebida();
+
+            Database.getInstance().addRegulador(new ReguladorPh(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            System.out.println("Regulador Adicionado com sucesso.");
+        }
     }
 
     public void onRemoveReguladorClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
 
+            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
+            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
+            mapViewer.getEngine().executeScript("marcadorSel =  null;");
+
+            Database.getInstance().removerRegulador(Database.getInstance().getReguladorById(app.getIdRecebido()));
+            System.out.println("Regulador Removido com sucesso.");
+        }
     }
 
 
@@ -237,6 +252,7 @@ public class MainController implements Initializable, Schedulable {
             //mapViewer.getEngine().executeScript("removeMarcador = true");
 
             mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
+            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
             mapViewer.getEngine().executeScript("marcadorSel =  null;");
 
             Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(app.getIdRecebido()));

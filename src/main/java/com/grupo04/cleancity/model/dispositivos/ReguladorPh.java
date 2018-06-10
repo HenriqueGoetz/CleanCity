@@ -17,9 +17,16 @@ public class ReguladorPh {
 
     private SensorPh sensorPh = new SensorPh();
     private Coordenada coord;
+    private int id;
 
     public ReguladorPh(double lati, double longi) {
         this.coord = new Coordenada(lati, longi);
+    }
+
+    // Overload do construtor de ReguladorPh
+    public ReguladorPh(double lati, double longi, int id) {
+        this.coord = new Coordenada(lati, longi);
+        this.id = id;
     }
 
     private void elevarPH(){
@@ -30,6 +37,14 @@ public class ReguladorPh {
     private void reduzirPH(){
         System.out.println("O ph está sendo elevado.");
         sensorPh.setLeituraPh(7);
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(){
+        this.id = id;
     }
 
     public void verificaPH(){
