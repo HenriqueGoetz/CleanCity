@@ -53,6 +53,8 @@ public class MainController implements Initializable, Schedulable {
     Label lblCaminhoes;
     @FXML
     Label lblColetas;
+    @FXML
+    Label lblReguladoresPh;
 
     private int hora = 0;
     private int minuto = 0;
@@ -409,6 +411,7 @@ public class MainController implements Initializable, Schedulable {
         lblEquipes.setText(String.valueOf(Database.getInstance().getEquipes().size()));
         lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
+        lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
     }
     @Override
     public void loop(ActionEvent event) {
