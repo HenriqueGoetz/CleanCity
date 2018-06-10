@@ -6,6 +6,7 @@ package com.grupo04.cleancity.model.dispositivos;
  * and open the template in the editor.
  */
 
+import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.model.mapa.Coordenada;
 import com.grupo04.cleancity.model.dispositivos.sensor.SensorPh;
 
@@ -30,12 +31,10 @@ public class ReguladorPh {
     }
 
     private void elevarPH(){
-        System.out.println("O ph está sendo elevado.");
         sensorPh.setLeituraPh(7);
     }
     
     private void reduzirPH(){
-        System.out.println("O ph está sendo elevado.");
         sensorPh.setLeituraPh(7);
     }
 
@@ -53,15 +52,17 @@ public class ReguladorPh {
     // TODO: Verificar RN para nível onde eleva/reduz o PH e nível para notificar
     public void testarPH(){
         float phAgora = sensorPh.getLeituraPh();
-        if(phAgora>8){
+        if(phAgora>10){
+            notificarPrefeitura(phAgora);
             this.elevarPH();
-        }else if(phAgora < 6){
+        }else if(phAgora < 4){
+            notificarPrefeitura(phAgora);
             this.reduzirPH();
         }
-        if(phAgora>9 || phAgora <5){
-            // TODO: Verificar como será feita a notificação
-            System.out.print("Notificando prefeitura. Ph em: " + Float.toString(phAgora));
-        }
+    }
+
+    public void notificarPrefeitura(float ph){
+        
     }
 
 }
