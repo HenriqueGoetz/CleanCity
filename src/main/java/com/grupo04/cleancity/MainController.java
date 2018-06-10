@@ -110,7 +110,44 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void addCaminhao() {
-        Database.getInstance().addCaminhao(new Caminhao());
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle("Adicionar Caminhão");
+        dialog.setHeaderText("Especifique a capacidade:");
+
+        ButtonType addButton = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField vol = new TextField();
+        vol.setPromptText("Volume Máximo");
+        setIntegerOnly(vol);
+        TextField peso = new TextField();
+        peso.setPromptText("Peso Máximo");
+        setIntegerOnly(peso);
+
+        grid.add(new Label( "Volume Max (L)"), 0, 0);
+        grid.add(vol, 1, 0);
+        grid.add(new Label("Peso Max (Kg)"), 0, 1);
+        grid.add(peso, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButton) {
+                return new String[]{vol.getText(), peso.getText()};
+            }
+            return null;
+        });
+
+        Optional<String[]> result = dialog.showAndWait();
+
+        if (result.isPresent() && !result.get()[0].isEmpty() && !result.get()[1].isEmpty()) {
+            Database.getInstance().addCaminhao(new Caminhao(Float.valueOf(result.get()[0]), Float.valueOf(result.get()[1])));
+        }
     }
 
     public void onAddCaminhaoClick() {
@@ -201,8 +238,8 @@ public class MainController implements Initializable, Schedulable {
 
     private boolean haCaminhoesDisponiveis() {
         for (Caminhao caminhoe : Database.getInstance().getCaminhoes()) {
-            if (caminhoe.isDisponibilidade()) {
-                caminhoe.setDisponibilidade(false);
+            if (caminhoe.isDisponivel()) {
+                caminhoe.setDisponivel(false);
                 return true;
             }
         }

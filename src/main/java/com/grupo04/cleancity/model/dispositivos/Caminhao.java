@@ -1,13 +1,7 @@
 package com.grupo04.cleancity.model.dispositivos;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import com.grupo04.cleancity.model.dispositivos.sensor.Balanca;
-import com.grupo04.cleancity.model.dispositivos.sensor.Capacidade;
+import com.grupo04.cleancity.model.Capacidade;
 import com.grupo04.cleancity.model.dispositivos.sensor.SensorSonar;
 
 /**
@@ -16,21 +10,34 @@ import com.grupo04.cleancity.model.dispositivos.sensor.SensorSonar;
  */
 public class Caminhao {
 
-    private boolean disponibilidade = true;
+    private boolean disponivel = true;
     private SensorSonar sensorVolume;
     private Balanca balanca;
     private Capacidade capacidade;
 
+    @Deprecated
     public Caminhao() {
-        this.capacidade = new Capacidade();
+        this(0, 0);
     }
 
-    public boolean isDisponibilidade() {
-        return disponibilidade;
+    /**
+     * Cria uma instancia de um caminhão
+     * @param volume Volume maximo que o caminhão consegue carregar em LITROS
+     * @param pesoMax Peso máximo que o caminhão consegue carregar em KILOGRAMAS
+     */
+    public Caminhao(float volume, float pesoMax) {
+        this.capacidade = new Capacidade(volume, pesoMax);
     }
 
-    public void setDisponibilidade(boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
+    public boolean isDisponivel() {
+        return disponivel;
     }
 
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
+    public Capacidade getCapacidade() {
+        return capacidade;
+    }
 }
