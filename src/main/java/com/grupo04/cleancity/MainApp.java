@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sun.applet.Main;
 
 
 public class MainApp extends Application {
@@ -42,9 +43,17 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        MainController mController = new MainController();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mController.lacoDeControle();
+            }
+        });
+        
+        thread.start();
         launch(args);
     }
-    
-    
-
 }

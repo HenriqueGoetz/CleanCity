@@ -202,15 +202,6 @@ public class MainController implements Initializable {
             int indice = lixeiras.indexOf(getLixeiraById(app.getIdRecebido()));
             lixeiras.remove(indice);
             System.out.println("Lixeira Removida com sucesso.");
-            //double latitude = -30.0227;
-            //double longitude = -51.1287;
-
-            /*for (int i = 0; i < lixeiras.size(); i++) {
-                if (lixeiras.get(i).getCoord().equals(new Coordenada(latitude, longitude))) {
-                    System.out.println("Lixeira Removida com sucesso.");
-                    lixeiras.remove(i);
-                }
-            }*/
         }
     }
 
@@ -309,6 +300,7 @@ public class MainController implements Initializable {
 
         boolean fim = false;
 
+        /* Casos de teste
         DiaDaSemana[] dias1 = new DiaDaSemana[3];
         DiaDaSemana[] dias2 = new DiaDaSemana[3];
 
@@ -348,6 +340,8 @@ public class MainController implements Initializable {
         addColeta(18, 30, dias2);
 
         System.out.println("Coletas criadas");
+
+        */
 
         while (!fim) {
 
