@@ -1,4 +1,4 @@
-package modelagem.cleancity.equipe;
+package com.grupo04.cleancity.model.mapa;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -10,12 +10,8 @@ package modelagem.cleancity.equipe;
  *
  * @author Henrique Goetz
  */
-public class Funcionario {
-
-    public Funcionario(String nome) {
-        this.nome = nome;
-    }
-
+public class Rua {
+    
     private String nome;
 
     public String getNome() {

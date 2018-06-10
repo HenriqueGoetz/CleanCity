@@ -1,4 +1,4 @@
-package modelagem.cleancity.equipe;
+package com.grupo04.cleancity.model.equipe;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,9 +6,9 @@ package modelagem.cleancity.equipe;
  * and open the template in the editor.
  */
 
-import modelagem.cleancity.DiaDaSemana;
-import modelagem.cleancity.dispositivos.Caminhao;
-import modelagem.cleancity.mapa.Rota;
+import com.grupo04.cleancity.model.DiaDaSemana;
+import com.grupo04.cleancity.model.dispositivos.Caminhao;
+import com.grupo04.cleancity.model.mapa.Rota;
 
 /**
  *

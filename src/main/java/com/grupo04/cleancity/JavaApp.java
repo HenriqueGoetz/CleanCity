@@ -1,8 +1,8 @@
 package com.grupo04.cleancity;
 
 import com.grupo04.cleancity.data.Database;
-import modelagem.cleancity.mapa.Coordenada;
-import modelagem.cleancity.dispositivos.Lixeira;
+import com.grupo04.cleancity.model.mapa.Coordenada;
+import com.grupo04.cleancity.model.dispositivos.Lixeira;
 
 public class JavaApp {
 

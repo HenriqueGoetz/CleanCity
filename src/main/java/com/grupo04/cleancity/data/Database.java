@@ -1,11 +1,11 @@
 package com.grupo04.cleancity.data;
 
-import modelagem.cleancity.dispositivos.Caminhao;
-import modelagem.cleancity.dispositivos.Lixeira;
-import modelagem.cleancity.dispositivos.ReguladorPh;
-import modelagem.cleancity.equipe.Coleta;
-import modelagem.cleancity.equipe.Equipe;
-import modelagem.cleancity.equipe.Funcionario;
+import com.grupo04.cleancity.model.dispositivos.Caminhao;
+import com.grupo04.cleancity.model.dispositivos.Lixeira;
+import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
+import com.grupo04.cleancity.model.equipe.Coleta;
+import com.grupo04.cleancity.model.equipe.Equipe;
+import com.grupo04.cleancity.model.equipe.Funcionario;
 
 import java.util.ArrayList;
 import java.util.List;

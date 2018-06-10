@@ -1,4 +1,4 @@
-package modelagem.cleancity;
+package com.grupo04.cleancity.model;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

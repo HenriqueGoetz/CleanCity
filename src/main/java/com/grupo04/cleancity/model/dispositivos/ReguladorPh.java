@@ -1,4 +1,4 @@
-package modelagem.cleancity.dispositivos;
+package com.grupo04.cleancity.model.dispositivos;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,8 +6,8 @@ package modelagem.cleancity.dispositivos;
  * and open the template in the editor.
  */
 
-import modelagem.cleancity.mapa.Coordenada;
-import modelagem.cleancity.dispositivos.sensor.SensorPh;
+import com.grupo04.cleancity.model.mapa.Coordenada;
+import com.grupo04.cleancity.model.dispositivos.sensor.SensorPh;
 
 /**
  *
