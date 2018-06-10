@@ -41,7 +41,7 @@
             </menus>
         </MenuBar>
         <WebView fx:id="mapViewer" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 0 1 0 0; -fx-border-color: darkgray;" GridPane.rowIndex="1">
          <children>
             <Button layoutX="36.0" layoutY="57.0" mnemonicParsing="false" onMouseClicked="#removeLixeira" prefHeight="31.0" prefWidth="129.0" text="Remover Lixeira" />
             <Button layoutX="36.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#addLixeira" text="Adicionar Lixeira" />

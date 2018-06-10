@@ -1,5 +1,6 @@
 package com.grupo04.cleancity;
 
+import com.grupo04.cleancity.data.Database;
 import modelagem.cleancity.mapa.Coordenada;
 import modelagem.cleancity.dispositivos.Lixeira;
 
@@ -26,8 +27,8 @@ public class JavaApp {
     public void moveLixeira(String coord, String id){
         recebeCoordenada(coord);
         idRecebido = Integer.parseInt(id);
-        Lixeira movida = controller.getLixeiraById(idRecebido);
-        controller.reposicionaLixeira(movida, coordenadaRecebida);
+        Lixeira movida = Database.getInstance().getLixeiraById(idRecebido);
+        MainController.reposicionaLixeira(movida, coordenadaRecebida);
     }
 
     public int getIdRecebido(){

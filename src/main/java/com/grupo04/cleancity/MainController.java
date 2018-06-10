@@ -1,5 +1,6 @@
 package com.grupo04.cleancity;
 
+import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.scheduler.Schedulable;
 import com.grupo04.cleancity.scheduler.Scheduler;
 import javafx.event.ActionEvent;
@@ -13,10 +14,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import modelagem.cleancity.*;
+import modelagem.cleancity.DiaDaSemana;
+import modelagem.cleancity.dispositivos.Caminhao;
 import modelagem.cleancity.dispositivos.Lixeira;
 import modelagem.cleancity.dispositivos.ReguladorPh;
-import modelagem.cleancity.dispositivos.Caminhao;
 import modelagem.cleancity.equipe.Coleta;
 import modelagem.cleancity.equipe.Equipe;
 import modelagem.cleancity.equipe.Funcionario;
@@ -28,11 +29,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 public class MainController implements Initializable, Schedulable {
-
-    private Scheduler scheduler;
 
     @FXML
     WebView mapViewer;
@@ -55,19 +57,12 @@ public class MainController implements Initializable, Schedulable {
     @FXML
     Label lblColetas;
 
-    private static List<Lixeira> lixeiras = new ArrayList<>();
-    private List<Lixeira> lixeirasCheias = new ArrayList<>();
-    private List<ReguladorPh> reguladoresPH = new ArrayList<>();
-    private List<Caminhao> caminhoes = new ArrayList<>();
-    private List<Coleta> coletas = new ArrayList<>();
-    private List<Equipe> equipes = new ArrayList<>();
-    private List<Funcionario> funcionarios = new ArrayList<>();
-
     private int hora = 0;
     private int minuto = 0;
     private int dia = 0;
 
-    JavaApp app = new JavaApp();
+    private Scheduler scheduler;
+    private JavaApp app = new JavaApp();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -89,40 +84,30 @@ public class MainController implements Initializable, Schedulable {
 
     }
 
-
-    public static Lixeira getLixeiraById(int id) {
-        for (Lixeira lixeira : lixeiras) {
-            if (lixeira.getId() == id) {
-                return lixeira;
-            }
-        }
-        return null;
-    }
-
     public void addLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng())");
 
             Coordenada coordenada = app.getCoordenadaRecebida();
 
-            lixeiras.add(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            Database.getInstance().addLixeira(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
             System.out.println("Lixeira Adicionada com sucesso.");
         }
     }
 
-    public static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
+    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
         lixeira.getCoord().setLatitude(coord.getLatitude());
         lixeira.getCoord().setLongitude(coord.getLongitude());
     }
 
     private void addCaminhao() {
-        caminhoes.add(new Caminhao());
+        Database.getInstance().addCaminhao(new Caminhao());
     }
 
-    public void onAddCaminhaoClick(ActionEvent event) {
+    public void onAddCaminhaoClick() {
         addCaminhao();
     }
-    public void onAddColetaClick(ActionEvent event) {
+    public void onAddColetaClick() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Coleta");
         dialog.setHeaderText("Especifique os horários");
@@ -198,14 +183,15 @@ public class MainController implements Initializable, Schedulable {
         if (haCaminhoesDisponiveis()) { // Verifica se existe caminhão disponível para coleta.
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
-            coletas.add(new Coleta(hora, min, dias, equipes.get(random.nextInt(equipes.size()))));
+            Database.getInstance().addColeta(new Coleta(hora, min, dias,
+                    Database.getInstance().getEquipes().get(random.nextInt(Database.getInstance().getEquipes().size()))));
         } else {
             System.out.println("Não há caminhões disponíveis.");
         }
     }
 
     private boolean haCaminhoesDisponiveis() {
-        for (Caminhao caminhoe : caminhoes) {
+        for (Caminhao caminhoe : Database.getInstance().getCaminhoes()) {
             if (caminhoe.isDisponibilidade()) {
                 caminhoe.setDisponibilidade(false);
                 return true;
@@ -214,9 +200,9 @@ public class MainController implements Initializable, Schedulable {
         return false;
     }
 
-    public boolean jaEstaNaListaDeCheias(Lixeira lix){
+    private boolean jaEstaNaListaDeCheias(Lixeira lix){
 
-        for(Lixeira lixeira : lixeirasCheias){
+        for(Lixeira lixeira : Database.getInstance().getLixeirasCheias()){
             if(lixeira.equals(lix)){
                 return true;
             }
@@ -227,11 +213,11 @@ public class MainController implements Initializable, Schedulable {
 
     private void verificarLixeiras() {
         Random rand = new Random();
-        for (Lixeira lixeira : lixeiras) {
+        for (Lixeira lixeira : Database.getInstance().getLixeiras()) {
             if (rand.nextInt(3) == 0) {
                 lixeira.jogarNaLixeira(); // Simulando o sensor.
                 if (lixeira.verificarLixeira() && !jaEstaNaListaDeCheias(lixeira)) {
-                    lixeirasCheias.add(lixeira);
+                    Database.getInstance().getLixeirasCheias().add(lixeira);
                 }
             }
         }
@@ -244,15 +230,14 @@ public class MainController implements Initializable, Schedulable {
             mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
             mapViewer.getEngine().executeScript("marcadorSel =  null;");
 
-            int indice = lixeiras.indexOf(getLixeiraById(app.getIdRecebido()));
-            lixeiras.remove(indice);
+            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(app.getIdRecebido()));
             System.out.println("Lixeira Removida com sucesso.");
         }
     }
 
     private void verificarReguladoresPh() {
         Random rand = new Random();
-        for (ReguladorPh aReguladoresPH : reguladoresPH) {
+        for (ReguladorPh aReguladoresPH : Database.getInstance().getReguladoresPH()) {
             if (rand.nextInt(3) == 0) {
                 aReguladoresPH.verificaPH(); // Simulando o sensor.
                 aReguladoresPH.testarPH();
@@ -262,7 +247,7 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void verificarColeta() {
-        for (Coleta coleta : coletas) {
+        for (Coleta coleta : Database.getInstance().getColetas()) {
             if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
                 System.out.println("HORA DA COLETA");
                 realizarColeta();
@@ -270,7 +255,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public void onAddFuncionarioClick(ActionEvent event) {
+    public void onAddFuncionarioClick() {
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setTitle("Adicionar Funcionário");
         inputDialog.setHeaderText("Digite o nome do funcionário:");
@@ -283,10 +268,10 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void addFuncionario(String nome) {
-        funcionarios.add(new Funcionario(nome));
+        Database.getInstance().addFuncionario(new Funcionario(nome));
     }
 
-    public void onAddEquipeClick(ActionEvent event) {
+    public void onAddEquipeClick() {
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setTitle("Adicionar Equipe");
         inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
@@ -300,6 +285,7 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void addEquipe(int id) {
+        List<Funcionario> funcionarios = Database.getInstance().getFuncionarios();
         if (funcionarios.size() > 2) { //Existe pelo menos 3 funcionários
             // Sorteia 3 funcionarios e cria uma equipe com os sorteados.
             Random random = new Random();
@@ -311,7 +297,7 @@ public class MainController implements Initializable, Schedulable {
                 func[2] = funcionarios.get(random.nextInt(funcionarios.size()));
             } while (func[0] == func[1] || func[1] == func[2] || func[0] == func[2]);
 
-            equipes.add(new Equipe(func, id));
+            Database.getInstance().addEquipe(new Equipe(func, id));
         } else {
             System.out.println("Não há funcionários suficientes para criar uma equipe.");
         }
@@ -319,7 +305,7 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void realizarColeta() {
-        this.lixeirasCheias.clear();
+        Database.getInstance().getLixeirasCheias().clear();
     }
 
     private void recalculaTempo() {
@@ -340,20 +326,20 @@ public class MainController implements Initializable, Schedulable {
 
     }
 
-    public void imprimeTempo() {
+    private void imprimeTempo() {
         //Atualizar o tempo na janela.
         lblMin.setText(String.valueOf(this.minuto));
         lblHora.setText(String.valueOf(this.hora));
         lblDia.setText(String.valueOf(this.dia));
     }
 
-    public void recalculaDados(){
-        lblLixeiras.setText(String.valueOf(lixeiras.size()));
-        lblLixeirasCheias.setText(String.valueOf(lixeirasCheias.size()));
-        lblFuncionarios.setText(String.valueOf(funcionarios.size()));
-        lblEquipes.setText(String.valueOf(equipes.size()));
-        lblCaminhoes.setText(String.valueOf(caminhoes.size()));
-        lblColetas.setText(String.valueOf(coletas.size()));
+    private void recalculaDados(){
+        lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
+        lblLixeirasCheias.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
+        lblFuncionarios.setText(String.valueOf(Database.getInstance().getFuncionarios().size()));
+        lblEquipes.setText(String.valueOf(Database.getInstance().getEquipes().size()));
+        lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
+        lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
     }
     @Override
     public void loop(ActionEvent event) {
