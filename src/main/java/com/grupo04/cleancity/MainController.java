@@ -43,9 +43,11 @@ public class MainController implements Initializable, Schedulable {
     @FXML
     Label lblDia;
     @FXML
-    Label lblFuncionarios;
-    @FXML
     Label lblLixeiras;
+    @FXML
+    Label lblLixeirasCheias;
+    @FXML
+    Label lblFuncionarios;
     @FXML
     Label lblEquipes;
     @FXML
@@ -212,12 +214,23 @@ public class MainController implements Initializable, Schedulable {
         return false;
     }
 
+    public boolean jaEstaNaListaDeCheias(Lixeira lix){
+
+        for(Lixeira lixeira : lixeirasCheias){
+            if(lixeira.equals(lix)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void verificarLixeiras() {
         Random rand = new Random();
         for (Lixeira lixeira : lixeiras) {
             if (rand.nextInt(3) == 0) {
                 lixeira.jogarNaLixeira(); // Simulando o sensor.
-                if (lixeira.verificarLixeira()) {
+                if (lixeira.verificarLixeira() && !jaEstaNaListaDeCheias(lixeira)) {
                     lixeirasCheias.add(lixeira);
                 }
             }
@@ -250,7 +263,8 @@ public class MainController implements Initializable, Schedulable {
 
     private void verificarColeta() {
         for (Coleta coleta : coletas) {
-            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(dia)) {
+            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
+                System.out.println("HORA DA COLETA");
                 realizarColeta();
             }
         }
@@ -335,6 +349,7 @@ public class MainController implements Initializable, Schedulable {
 
     public void recalculaDados(){
         lblLixeiras.setText(String.valueOf(lixeiras.size()));
+        lblLixeirasCheias.setText(String.valueOf(lixeirasCheias.size()));
         lblFuncionarios.setText(String.valueOf(funcionarios.size()));
         lblEquipes.setText(String.valueOf(equipes.size()));
         lblCaminhoes.setText(String.valueOf(caminhoes.size()));

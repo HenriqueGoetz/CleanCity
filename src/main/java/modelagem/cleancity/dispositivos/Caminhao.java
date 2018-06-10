@@ -16,7 +16,7 @@ import modelagem.cleancity.dispositivos.sensor.SensorSonar;
  */
 public class Caminhao {
 
-    private boolean disponibilidade;
+    private boolean disponibilidade = true;
     private SensorSonar sensorVolume;
     private Balanca balanca;
     private Capacidade capacidade;
