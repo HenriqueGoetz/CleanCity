@@ -230,10 +230,20 @@ public class MainController implements Initializable, Schedulable {
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
             Database.getInstance().addColeta(new Coleta(hora, min, dias,
-                    Database.getInstance().getEquipes().get(random.nextInt(Database.getInstance().getEquipes().size()))));
+                    Database.getInstance().getEquipes().get(random.nextInt(Database.getInstance().getEquipes().size())), selecionaCaminhaoDisponivel()));
         } else {
             System.out.println("Não há caminhões disponíveis.");
         }
+    }
+
+    public Caminhao selecionaCaminhaoDisponivel(){
+        for(Caminhao caminhoes : Database.getInstance().getCaminhoes()){
+            if(caminhoes.isDisponivel()){
+                caminhoes.setDisponivel(false);
+                return caminhoes;
+            }
+        }
+        return null;
     }
 
     private boolean haCaminhoesDisponiveis() {

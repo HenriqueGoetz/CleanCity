@@ -11,8 +11,8 @@ import com.grupo04.cleancity.model.dispositivos.sensor.SensorSonar;
 public class Caminhao {
 
     private boolean disponivel = true;
-    private SensorSonar sensorVolume;
-    private Balanca balanca;
+    private SensorSonar sensorVolume = new SensorSonar();
+    private Balanca balanca = new Balanca();
     private Capacidade capacidade;
 
     @Deprecated
