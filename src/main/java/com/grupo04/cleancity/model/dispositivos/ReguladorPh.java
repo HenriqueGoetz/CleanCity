@@ -30,6 +30,11 @@ public class ReguladorPh {
         this.id = id;
     }
 
+
+    public Coordenada getCoord() {
+        return coord;
+    }
+
     private void elevarPH(){
         sensorPh.setLeituraPh(7);
     }

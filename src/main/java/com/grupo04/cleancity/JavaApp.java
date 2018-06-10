@@ -1,6 +1,7 @@
 package com.grupo04.cleancity;
 
 import com.grupo04.cleancity.data.Database;
+import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
 import com.grupo04.cleancity.model.mapa.Coordenada;
 import com.grupo04.cleancity.model.dispositivos.Lixeira;
 
@@ -29,6 +30,13 @@ public class JavaApp {
         idRecebido = Integer.parseInt(id);
         Lixeira movida = Database.getInstance().getLixeiraById(idRecebido);
         MainController.reposicionaLixeira(movida, coordenadaRecebida);
+    }
+
+    public void moveRegulador(String coord, String id){
+        recebeCoordenada(coord);
+        idRecebido = Integer.parseInt(id);
+        ReguladorPh movido = Database.getInstance().getReguladorById(idRecebido);
+        MainController.reposicionaRegulador(movido, coordenadaRecebida);
     }
 
     public int getIdRecebido(){
