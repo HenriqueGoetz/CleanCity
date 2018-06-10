@@ -18,7 +18,7 @@ public class Coleta {
     
     private int hora;
     private int minutos;
-    private Caminhao[] frota;
+    private Caminhao caminhao;
     private Rota rota;
     private DiaDaSemana[] dias;
     private Equipe equipe;
@@ -39,11 +39,12 @@ public class Coleta {
         return dias;
     }
 
-    public Coleta(int hora, int minutos, DiaDaSemana[] dias, Equipe equipe) {
+    public Coleta(int hora, int minutos, DiaDaSemana[] dias, Equipe equipe, Caminhao caminhao) {
         this.hora = hora;
         this.minutos = minutos;
         this.dias = dias;
         this.equipe = equipe;
+        this.caminhao = caminhao;
     }
 
     public void setDias(DiaDaSemana[] dias) {
@@ -60,6 +61,10 @@ public class Coleta {
                 return true;
         }
         return false;
+    }
+
+    public Caminhao getCaminhao() {
+        return caminhao;
     }
 
     public void agendarColeta(int hour, int min, DiaDaSemana[] days){

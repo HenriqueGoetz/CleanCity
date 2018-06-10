@@ -29,10 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainController implements Initializable, Schedulable {
 
@@ -56,6 +53,8 @@ public class MainController implements Initializable, Schedulable {
     Label lblCaminhoes;
     @FXML
     Label lblColetas;
+    @FXML
+    Label lblReguladoresPh;
 
     private int hora = 0;
     private int minuto = 0;
@@ -125,7 +124,44 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void addCaminhao() {
-        Database.getInstance().addCaminhao(new Caminhao());
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle("Adicionar Caminhão");
+        dialog.setHeaderText("Especifique a capacidade:");
+
+        ButtonType addButton = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField vol = new TextField();
+        vol.setPromptText("Volume Máximo");
+        setIntegerOnly(vol);
+        TextField peso = new TextField();
+        peso.setPromptText("Peso Máximo");
+        setIntegerOnly(peso);
+
+        grid.add(new Label( "Volume Max (L)"), 0, 0);
+        grid.add(vol, 1, 0);
+        grid.add(new Label("Peso Max (Kg)"), 0, 1);
+        grid.add(peso, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButton) {
+                return new String[]{vol.getText(), peso.getText()};
+            }
+            return null;
+        });
+
+        Optional<String[]> result = dialog.showAndWait();
+
+        if (result.isPresent() && !result.get()[0].isEmpty() && !result.get()[1].isEmpty()) {
+            Database.getInstance().addCaminhao(new Caminhao(Float.valueOf(result.get()[0]), Float.valueOf(result.get()[1])));
+        }
     }
 
     public void onAddCaminhaoClick() {
@@ -208,16 +244,26 @@ public class MainController implements Initializable, Schedulable {
             // Sorteia uma equipe para realizar a coleta.
             Random random = new Random();
             Database.getInstance().addColeta(new Coleta(hora, min, dias,
-                    Database.getInstance().getEquipes().get(random.nextInt(Database.getInstance().getEquipes().size()))));
+                    Database.getInstance().getEquipes().get(random.nextInt(Database.getInstance().getEquipes().size())), selecionaCaminhaoDisponivel()));
         } else {
             System.out.println("Não há caminhões disponíveis.");
         }
     }
 
+    public Caminhao selecionaCaminhaoDisponivel(){
+        for(Caminhao caminhoes : Database.getInstance().getCaminhoes()){
+            if(caminhoes.isDisponivel()){
+                caminhoes.setDisponivel(false);
+                return caminhoes;
+            }
+        }
+        return null;
+    }
+
     private boolean haCaminhoesDisponiveis() {
         for (Caminhao caminhoe : Database.getInstance().getCaminhoes()) {
-            if (caminhoe.isDisponibilidade()) {
-                caminhoe.setDisponibilidade(false);
+            if (caminhoe.isDisponivel()) {
+                caminhoe.setDisponivel(false);
                 return true;
             }
         }
@@ -275,9 +321,24 @@ public class MainController implements Initializable, Schedulable {
         for (Coleta coleta : Database.getInstance().getColetas()) {
             if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
                 System.out.println("HORA DA COLETA");
-                realizarColeta();
+                realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
             }
         }
+    }
+
+    public List<Lixeira> selecionarLixeiras(Caminhao caminhao){
+        int indice = 0;
+        List<Lixeira> selecionadas = new ArrayList<>();
+        boolean couber = true;
+        while(couber){
+            Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
+            if(lix.getVolume() + caminhao.getLeituraVolume() > 0.8*(caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() > 0.8*(caminhao.getCapacidade().getPeso())){
+                selecionadas.add(lix);
+            }else{
+                couber = false;
+            }
+        }
+        return selecionadas;
     }
 
     public void onAddFuncionarioClick() {
@@ -329,10 +390,11 @@ public class MainController implements Initializable, Schedulable {
 
     }
 
-    private void realizarColeta() {
-        Database.getInstance().getLixeirasCheias().clear();
+    private void realizarColeta(List<Lixeira> lixeiras) {
+        for (Lixeira lix : lixeiras) {
+            Database.getInstance().getLixeirasCheias().remove(lix);
+        }
     }
-
     private void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
@@ -359,12 +421,13 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void recalculaDados(){
-        lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
+        lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeiras().size()));
         lblLixeirasCheias.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
         lblFuncionarios.setText(String.valueOf(Database.getInstance().getFuncionarios().size()));
         lblEquipes.setText(String.valueOf(Database.getInstance().getEquipes().size()));
         lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
+        lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
     }
     @Override
     public void loop(ActionEvent event) {
