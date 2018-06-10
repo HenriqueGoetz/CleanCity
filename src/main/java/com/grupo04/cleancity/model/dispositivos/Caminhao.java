@@ -33,6 +33,13 @@ public class Caminhao {
         return disponivel;
     }
 
+    public float getLeituraVolume(){
+        return this.sensorVolume.getLeituraVolume();
+    }
+
+    public float getLeituraBalanca(){
+        return this.balanca.getLeituraPeso();
+    }
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
     }

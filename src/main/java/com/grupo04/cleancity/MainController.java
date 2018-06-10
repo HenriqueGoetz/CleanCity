@@ -29,10 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainController implements Initializable, Schedulable {
 
@@ -306,9 +303,24 @@ public class MainController implements Initializable, Schedulable {
         for (Coleta coleta : Database.getInstance().getColetas()) {
             if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
                 System.out.println("HORA DA COLETA");
-                realizarColeta();
+                realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
             }
         }
+    }
+
+    public List<Lixeira> selecionarLixeiras(Caminhao caminhao){
+        int indice = 0;
+        List<Lixeira> selecionadas = new ArrayList<>();
+        boolean couber = true;
+        while(couber){
+            Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
+            if(lix.getVolume() + caminhao.getLeituraVolume() > 0.8*(caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() > 0.8*(caminhao.getCapacidade().getPeso())){
+                selecionadas.add(lix);
+            }else{
+                couber = false;
+            }
+        }
+        return selecionadas;
     }
 
     public void onAddFuncionarioClick() {
@@ -360,10 +372,11 @@ public class MainController implements Initializable, Schedulable {
 
     }
 
-    private void realizarColeta() {
-        Database.getInstance().getLixeirasCheias().clear();
+    private void realizarColeta(List<Lixeira> lixeiras) {
+        for (Lixeira lix : lixeiras) {
+            Database.getInstance().getLixeirasCheias().remove(lix);
+        }
     }
-
     private void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
@@ -390,7 +403,7 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void recalculaDados(){
-        lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
+        lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeiras().size()));
         lblLixeirasCheias.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
         lblFuncionarios.setText(String.valueOf(Database.getInstance().getFuncionarios().size()));
         lblEquipes.setText(String.valueOf(Database.getInstance().getEquipes().size()));

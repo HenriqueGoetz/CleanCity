@@ -63,6 +63,10 @@ public class Coleta {
         return false;
     }
 
+    public Caminhao getCaminhao() {
+        return caminhao;
+    }
+
     public void agendarColeta(int hour, int min, DiaDaSemana[] days){
         this.setHora(hour);
         this.setMinutos(min);
