@@ -14,6 +14,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import modelagem.cleancity.*;
+import modelagem.cleancity.dispositivos.Lixeira;
+import modelagem.cleancity.dispositivos.ReguladorPh;
+import modelagem.cleancity.dispositivos.Caminhao;
+import modelagem.cleancity.equipe.Coleta;
+import modelagem.cleancity.equipe.Equipe;
+import modelagem.cleancity.equipe.Funcionario;
+import modelagem.cleancity.mapa.Coordenada;
 import netscape.javascript.JSObject;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package modelagem.cleancity;
+package modelagem.cleancity.dispositivos.sensor;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package modelagem.cleancity;
+package modelagem.cleancity.mapa;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -10,6 +10,6 @@ package modelagem.cleancity;
  *
  * @author Henrique Goetz
  */
-public class Esquina {
+public class Rota {
     
 }

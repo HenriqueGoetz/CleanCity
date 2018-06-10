@@ -1,4 +1,4 @@
-package modelagem.cleancity;
+package modelagem.cleancity.mapa;
 
 import javafx.event.Event;
 
