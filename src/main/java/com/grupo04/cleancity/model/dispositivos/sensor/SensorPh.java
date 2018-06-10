@@ -8,8 +8,8 @@ import java.util.Random;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author Henrique Goetz
  */
 public class SensorPh extends Sensor {
@@ -26,7 +26,17 @@ public class SensorPh extends Sensor {
 
     public void lerPH() {
         Random random = new Random();
-        setLeituraPh((float) (random.nextGaussian() + this.leituraPh));
+        int fator = random.nextInt(2);
+
+        if (fator == 0)
+            setLeituraPh((float)(-0.5*(random.nextInt(2))+this.leituraPh));
+        else
+            setLeituraPh((float)(0.5*(random.nextInt(2))+this.leituraPh));
+
+        if(1 == random.nextInt(5)){
+            setLeituraPh(7);
+        }
+
         if (this.leituraPh < 0) {
             setLeituraPh(0);
         } else if (this.leituraPh > 14) {

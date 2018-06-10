@@ -9,9 +9,11 @@ package com.grupo04.cleancity.model.dispositivos;
 import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.model.mapa.Coordenada;
 import com.grupo04.cleancity.model.dispositivos.sensor.SensorPh;
+import javafx.scene.control.Alert;
+
+import javax.swing.*;
 
 /**
- *
  * @author Henrique Goetz
  */
 public class ReguladorPh {
@@ -35,39 +37,47 @@ public class ReguladorPh {
         return coord;
     }
 
-    private void elevarPH(){
-        sensorPh.setLeituraPh(7);
-    }
-    
-    private void reduzirPH(){
+    private void elevarPH() {
         sensorPh.setLeituraPh(7);
     }
 
-    public int getId(){
+    private void reduzirPH() {
+        sensorPh.setLeituraPh(7);
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(){
+    public void setId() {
         this.id = id;
     }
 
-    public void verificaPH(){
+    public void verificaPH() {
         sensorPh.lerPH();
     }
+
     // TODO: Verificar RN para nível onde eleva/reduz o PH e nível para notificar
-    public void testarPH(){
+    public void testarPH() {
         float phAgora = sensorPh.getLeituraPh();
-        if(phAgora>10){
-            notificarPrefeitura(phAgora);
+        if (phAgora > 10) {
+            this.notificarPrefeitura(phAgora);
             this.elevarPH();
-        }else if(phAgora < 4){
+        } else if (phAgora < 4) {
             notificarPrefeitura(phAgora);
             this.reduzirPH();
         }
     }
 
-    public void notificarPrefeitura(float ph){
-        
+    public void notificarPrefeitura(float ph) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Notificação");
+        if (ph > 7)
+            alerta.setContentText("Prefeitura, o ph nas coordenadas: " + this.getCoord().getLatitude() + ", " + this.getCoord().getLongitude() + " estava muito alto.");
+        else
+            alerta.setContentText("Prefeitura, o ph nas coordenadas: " + this.getCoord().getLatitude() + ", " + this.getCoord().getLongitude() + " estava muito baixo.");
+
+        alerta.show();
     }
 
 }
