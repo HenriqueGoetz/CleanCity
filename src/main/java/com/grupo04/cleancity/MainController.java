@@ -84,6 +84,15 @@ public class MainController implements Initializable, Schedulable {
 
     }
 
+    public void onAddReguladorClick(MouseEvent event) {
+
+    }
+
+    public void onRemoveReguladorClick(MouseEvent event) {
+
+    }
+
+
     public void addLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng())");
