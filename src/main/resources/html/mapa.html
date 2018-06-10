@@ -241,7 +241,7 @@
                 });
 
                 marcador.addListener('dragend', function() {
-                    app.moveLixeira(marcador.position, id);
+                    app.moveMarcador(marcador.position, id);
                     marcador.setDraggable(false);
                     marcador.setIcon({url: "http://www.pngmart.com/files/6/PH-Meter-PNG-Photos.png",
                         scaledSize: new google.maps.Size(40, 32)});

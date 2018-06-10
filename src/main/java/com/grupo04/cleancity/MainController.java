@@ -123,6 +123,11 @@ public class MainController implements Initializable, Schedulable {
         lixeira.getCoord().setLongitude(coord.getLongitude());
     }
 
+    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
+        regulador.getCoord().setLatitude(coord.getLatitude());
+        regulador.getCoord().setLongitude(coord.getLongitude());
+    }
+
     private void addCaminhao() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Caminhão");

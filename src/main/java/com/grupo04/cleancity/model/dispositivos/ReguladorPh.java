@@ -29,6 +29,11 @@ public class ReguladorPh {
         this.id = id;
     }
 
+
+    public Coordenada getCoord() {
+        return coord;
+    }
+
     private void elevarPH(){
         System.out.println("O ph está sendo elevado.");
         sensorPh.setLeituraPh(7);
