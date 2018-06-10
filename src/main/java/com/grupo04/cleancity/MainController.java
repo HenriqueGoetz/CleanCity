@@ -42,6 +42,16 @@ public class MainController implements Initializable, Schedulable {
     Label lblHora;
     @FXML
     Label lblDia;
+    @FXML
+    Label lblFuncionarios;
+    @FXML
+    Label lblLixeiras;
+    @FXML
+    Label lblEquipes;
+    @FXML
+    Label lblCaminhoes;
+    @FXML
+    Label lblColetas;
 
     private static List<Lixeira> lixeiras = new ArrayList<>();
     private List<Lixeira> lixeirasCheias = new ArrayList<>();
@@ -75,48 +85,6 @@ public class MainController implements Initializable, Schedulable {
         this.scheduler = new Scheduler(this);
         scheduler.start();
 
-                /* Casos de teste
-        DiaDaSemana[] dias1 = new DiaDaSemana[3];
-        DiaDaSemana[] dias2 = new DiaDaSemana[3];
-
-        dias1[0] = SEG;
-        dias1[1] = QUA;
-        dias1[2] = SEX;
-        dias2[0] = DOM;
-        dias2[1] = TER;
-        dias2[2] = QUI;
-
-        addCaminhao();
-        addCaminhao();
-        addCaminhao();
-        addCaminhao();
-
-        System.out.println("Caminhoes criados.");
-
-        addFuncionario("Joao");
-        addFuncionario("Joaguim");
-        addFuncionario("Maria");
-        addFuncionario("Pedro");
-        addFuncionario("Marcos");
-
-        System.out.println("Funcionários criados.");
-
-        addEquipe(0);
-        addEquipe(1);
-        addEquipe(2);
-
-        System.out.println("Equipes criadas.");
-
-        addColeta(6, 30, dias1);
-        addColeta(12, 00, dias1);
-        addColeta(18, 30, dias1);
-        addColeta(6, 30, dias2);
-        addColeta(12, 00, dias2);
-        addColeta(18, 30, dias2);
-
-        System.out.println("Coletas criadas");
-
-        */
     }
 
 
@@ -149,6 +117,9 @@ public class MainController implements Initializable, Schedulable {
         caminhoes.add(new Caminhao());
     }
 
+    public void onAddCaminhaoClick(ActionEvent event) {
+        addCaminhao();
+    }
     public void onAddColetaClick(ActionEvent event) {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Coleta");
@@ -352,9 +323,7 @@ public class MainController implements Initializable, Schedulable {
         } else {
             this.minuto++;
         }
-        System.out.println("Dia: " + this.dia);
-        System.out.println("Hora: " + this.hora);
-        System.out.println("Minuto :" + this.minuto);
+
     }
 
     public void imprimeTempo() {
@@ -362,13 +331,20 @@ public class MainController implements Initializable, Schedulable {
         lblMin.setText(String.valueOf(this.minuto));
         lblHora.setText(String.valueOf(this.hora));
         lblDia.setText(String.valueOf(this.dia));
-
     }
 
+    public void recalculaDados(){
+        lblLixeiras.setText(String.valueOf(lixeiras.size()));
+        lblFuncionarios.setText(String.valueOf(funcionarios.size()));
+        lblEquipes.setText(String.valueOf(equipes.size()));
+        lblCaminhoes.setText(String.valueOf(caminhoes.size()));
+        lblColetas.setText(String.valueOf(coletas.size()));
+    }
     @Override
     public void loop(ActionEvent event) {
         recalculaTempo();
         imprimeTempo();
+        recalculaDados();
         verificarLixeiras();
         verificarReguladoresPh();
         verificarColeta();
