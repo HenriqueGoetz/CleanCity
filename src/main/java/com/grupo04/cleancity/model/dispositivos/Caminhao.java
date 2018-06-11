@@ -46,6 +46,7 @@ public class Caminhao {
     }
 
     public void esvaziar(){
+        System.out.println("Caminhao realizou a coleta, e já esvaziou.");
         this.balanca.setLeituraPeso(0);
         this.sensorVolume.setLeituraVolume(0);
     }

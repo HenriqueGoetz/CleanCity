@@ -55,7 +55,6 @@ public class Lixeira {
 
     public boolean verificarLixeira() {
         if (this.sensorVolume.getLeituraVolume() > 90 || this.balanca.getLeituraPeso() > 90) {
-            //System.out.println("Lixeira precisa ser esvaziada.");
             return true;
         }
         return false;

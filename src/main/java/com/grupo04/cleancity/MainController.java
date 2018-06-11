@@ -276,24 +276,13 @@ public class MainController implements Initializable, Schedulable {
         return false;
     }
 
-    private boolean jaEstaNaListaDeCheias(Lixeira lix) {
-
-        for (Lixeira lixeira : Database.getInstance().getLixeirasCheias()) {
-            if (lixeira.equals(lix)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private void verificarLixeiras() {
         Random rand = new Random();
         for (Lixeira lixeira : Database.getInstance().getLixeiras()) {
             if (rand.nextInt(3) == 0) {
                 lixeira.jogarNaLixeira(); // Simulando o sensor.
-                if (lixeira.verificarLixeira() && !jaEstaNaListaDeCheias(lixeira)) {
-                    Database.getInstance().getLixeirasCheias().remove(lixeira);
+                if (lixeira.verificarLixeira() && !Database.getInstance().getLixeirasCheias().contains(lixeira)) {
                     Database.getInstance().getLixeirasCheias().add(lixeira);
                 }
             }
@@ -326,7 +315,7 @@ public class MainController implements Initializable, Schedulable {
 
     private void verificarColeta() {
         for (Coleta coleta : Database.getInstance().getColetas()) {
-            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora) {
+            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
                 realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
                 System.out.println("Realizou Coleta.");
             }
@@ -344,8 +333,7 @@ public class MainController implements Initializable, Schedulable {
                 Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
                 System.out.println(indice);
 
-                if (lix.getVolume() + caminhao.getLeituraSensor() < 0.8 * (caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() < 0.8 * (caminhao.getCapacidade().getPeso())) {
-                    selecionadas.remove(lix);
+                if (lix.getVolume() + caminhao.getLeituraSensor() < 0.8 * (caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() < 0.8 * (caminhao.getCapacidade().getPeso()) && !selecionadas.contains(lix)) {
                     selecionadas.add(lix);
                     caminhao.virarDaLixeiraNoCaminhao(lix);
                 } else {
@@ -357,17 +345,16 @@ public class MainController implements Initializable, Schedulable {
             indice++;
         }
         caminhao.esvaziar();
-        System.out.println("Foram selecionadas: " +selecionadas.size());
+        System.out.println("Foram selecionadas: " + selecionadas.size());
         return selecionadas;
     }
 
     private void realizarColeta(List<Lixeira> lixeiras) {
-        System.out.println("Realizando Coleta.");
         for (Lixeira lix : lixeiras) {
-            System.out.println("Removeu uma.");
             lix.esvaziarLixeira();
             Database.getInstance().getLixeirasCheias().remove(lix);
         }
+        System.out.println("Coleta realizada.");
     }
 
 

@@ -11,7 +11,6 @@ package com.grupo04.cleancity.model;
  * @author Henrique Goetz
  */
 public enum DiaDaSemana {
-
     DOM(1),
     SEG(2),
     TER(3),
