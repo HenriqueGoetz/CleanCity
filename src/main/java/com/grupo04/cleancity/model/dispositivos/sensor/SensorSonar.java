@@ -1,5 +1,7 @@
 package com.grupo04.cleancity.model.dispositivos.sensor;
 
+import com.grupo04.cleancity.model.Capacidade;
+
 import java.util.Random;
 
 /*
@@ -7,8 +9,8 @@ import java.util.Random;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author Henrique Goetz
  */
 public class SensorSonar extends Sensor {
@@ -23,9 +25,13 @@ public class SensorSonar extends Sensor {
         this.leituraVolume = leituraVolume;
     }
 
-    public void lerVolume() {
+    public void lerVolume(float limite) {
         Random random = new Random();
         setLeituraVolume((float) (this.leituraVolume + random.nextFloat() * 0.5));
+        if (this.getLeituraVolume() > limite) {
+            setLeituraVolume(limite);
+
+        }
     }
 
     public void zerarVolume() {

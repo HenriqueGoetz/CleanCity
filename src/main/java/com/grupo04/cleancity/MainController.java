@@ -340,6 +340,7 @@ public class MainController implements Initializable, Schedulable {
 
         while (couber && indice < Database.getInstance().getLixeirasCheias().size()) {
             if (!Database.getInstance().getLixeirasCheias().isEmpty()) {
+
                 Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
 
                 if (lix.getVolume() + caminhao.getLeituraSensor() < 0.8 * (caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() < 0.8 * (caminhao.getCapacidade().getPeso())) {
@@ -352,11 +353,22 @@ public class MainController implements Initializable, Schedulable {
             } else {
                 couber = false;
             }
+            indice++;
         }
         caminhao.esvaziar();
         System.out.println(selecionadas.size());
         return selecionadas;
     }
+
+    private void realizarColeta(List<Lixeira> lixeiras) {
+        System.out.println("Realizando Coleta.");
+        for (Lixeira lix : lixeiras) {
+            System.out.println("Removeu uma.");
+            lix.esvaziarLixeira();
+            Database.getInstance().getLixeirasCheias().remove(lix);
+        }
+    }
+
 
     public void onAddFuncionarioClick() {
         TextInputDialog inputDialog = new TextInputDialog();
@@ -405,15 +417,6 @@ public class MainController implements Initializable, Schedulable {
             System.out.println("Não há funcionários suficientes para criar uma equipe.");
         }
 
-    }
-
-    private void realizarColeta(List<Lixeira> lixeiras) {
-        System.out.println("Realizando Coleta.");
-        for (Lixeira lix : lixeiras) {
-            System.out.println("Removeu uma.");
-            lix.esvaziarLixeira();
-            Database.getInstance().getLixeirasCheias().remove(lix);
-        }
     }
 
     private void recalculaTempo() {
