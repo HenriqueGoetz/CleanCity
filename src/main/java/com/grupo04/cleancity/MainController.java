@@ -59,7 +59,7 @@ public class MainController implements Initializable, Schedulable {
 
     private int hora = 0;
     private int minuto = 0;
-    private int dia = 0;
+    private int dia = 1;
 
     private Scheduler scheduler;
     private JavaApp app = new JavaApp();
@@ -410,10 +410,10 @@ public class MainController implements Initializable, Schedulable {
     private void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
-            if (this.dia != 6)
+            if (this.dia != 7)
                 this.dia++;
             else
-                this.dia = 0;
+                this.dia = 1;
             this.hora = 0;
             this.minuto = 0;
         } else if (this.minuto == 59) {
