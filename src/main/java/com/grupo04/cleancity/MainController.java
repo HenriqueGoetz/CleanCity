@@ -325,8 +325,8 @@ public class MainController implements Initializable, Schedulable {
     private void verificarColeta() {
         for (Coleta coleta : Database.getInstance().getColetas()) {
             if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
-                System.out.println("HORA DA COLETA");
                 realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
+                System.out.println("Realizou Coleta.");
             }
         }
     }
@@ -335,6 +335,7 @@ public class MainController implements Initializable, Schedulable {
         int indice = 0;
         List<Lixeira> selecionadas = new ArrayList<>();
         boolean couber = true;
+
         while(couber){
             Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
             if(lix.getVolume() + caminhao.getLeituraVolume() > 0.8*(caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() > 0.8*(caminhao.getCapacidade().getPeso())){
@@ -343,6 +344,7 @@ public class MainController implements Initializable, Schedulable {
                 couber = false;
             }
         }
+
         return selecionadas;
     }
 
@@ -396,6 +398,7 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void realizarColeta(List<Lixeira> lixeiras) {
+        System.out.println("Realizando Coleta.");
         for (Lixeira lix : lixeiras) {
             Database.getInstance().getLixeirasCheias().remove(lix);
         }
