@@ -342,6 +342,7 @@ public class MainController implements Initializable, Schedulable {
             if (!Database.getInstance().getLixeirasCheias().isEmpty()) {
 
                 Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
+                System.out.println(indice);
 
                 if (lix.getVolume() + caminhao.getLeituraSensor() < 0.8 * (caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() < 0.8 * (caminhao.getCapacidade().getPeso())) {
                     selecionadas.remove(lix);
@@ -356,7 +357,7 @@ public class MainController implements Initializable, Schedulable {
             indice++;
         }
         caminhao.esvaziar();
-        System.out.println(selecionadas.size());
+        System.out.println("Foram selecionadas: " +selecionadas.size());
         return selecionadas;
     }
 

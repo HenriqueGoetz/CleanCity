@@ -49,8 +49,8 @@ public class Lixeira {
     }
 
     public void jogarNaLixeira() {
-        this.sensorVolume.lerVolume();
-        this.balanca.lerBalanca();
+        this.sensorVolume.lerVolume(this.capacidade.getVolume());
+        this.balanca.lerBalanca(this.capacidade.getPeso());
     }
 
     public boolean verificarLixeira() {
