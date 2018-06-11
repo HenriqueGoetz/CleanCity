@@ -23,15 +23,15 @@ public class Lixeira {
     private int id;
 
     public Lixeira(double lati, double longi) {
-        this.capacidade.setPeso(0);
-        this.capacidade.setVolume(0);
+        this.capacidade.setPeso(100);
+        this.capacidade.setVolume(100);
         this.coord = new Coordenada(lati, longi);
     }
 
     // Overload do construtor
     public Lixeira(double lati, double longi, int id) {
-        this.capacidade.setPeso(0);
-        this.capacidade.setVolume(0);
+        this.capacidade.setPeso(100);
+        this.capacidade.setVolume(100);
         this.coord = new Coordenada(lati, longi);
         this.id = id;
     }
@@ -49,13 +49,12 @@ public class Lixeira {
     }
 
     public void jogarNaLixeira() {
-        this.sensorVolume.lerVolume();
-        this.balanca.lerBalanca();
+        this.sensorVolume.lerVolume(this.capacidade.getVolume());
+        this.balanca.lerBalanca(this.capacidade.getPeso());
     }
 
     public boolean verificarLixeira() {
         if (this.sensorVolume.getLeituraVolume() > 90 || this.balanca.getLeituraPeso() > 90) {
-            //System.out.println("Lixeira precisa ser esvaziada.");
             return true;
         }
         return false;

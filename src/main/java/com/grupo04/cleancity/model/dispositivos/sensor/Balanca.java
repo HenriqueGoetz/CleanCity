@@ -27,9 +27,12 @@ public class Balanca extends Sensor {
         this.leituraPeso = leituraPeso;
     }
 
-    public void lerBalanca() {
+    public void lerBalanca(float limite) {
         Random random = new Random();
         setLeituraPeso((float) ((random.nextInt() % 10) + this.leituraPeso));
+        if(getLeituraPeso()>limite){
+            setLeituraPeso(limite);
+        }
     }
     
     public void zerarBalanca(){

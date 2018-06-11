@@ -6,11 +6,14 @@ package com.grupo04.cleancity.model.dispositivos;
  * and open the template in the editor.
  */
 
+import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.model.mapa.Coordenada;
 import com.grupo04.cleancity.model.dispositivos.sensor.SensorPh;
+import javafx.scene.control.Alert;
+
+import javax.swing.*;
 
 /**
- *
  * @author Henrique Goetz
  */
 public class ReguladorPh {
@@ -34,39 +37,47 @@ public class ReguladorPh {
         return coord;
     }
 
-    private void elevarPH(){
-        System.out.println("O ph está sendo elevado.");
-        sensorPh.setLeituraPh(7);
-    }
-    
-    private void reduzirPH(){
-        System.out.println("O ph está sendo elevado.");
+    private void elevarPH() {
         sensorPh.setLeituraPh(7);
     }
 
-    public int getId(){
+    private void reduzirPH() {
+        sensorPh.setLeituraPh(7);
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(){
+    public void setId() {
         this.id = id;
     }
 
-    public void verificaPH(){
+    public void verificaPH() {
         sensorPh.lerPH();
     }
+
     // TODO: Verificar RN para nível onde eleva/reduz o PH e nível para notificar
-    public void testarPH(){
+    public void testarPH() {
         float phAgora = sensorPh.getLeituraPh();
-        if(phAgora>8){
+        if (phAgora > 10) {
+            this.notificarPrefeitura(phAgora);
             this.elevarPH();
-        }else if(phAgora < 6){
+        } else if (phAgora < 4) {
+            notificarPrefeitura(phAgora);
             this.reduzirPH();
         }
-        if(phAgora>9 || phAgora <5){
-            // TODO: Verificar como será feita a notificação
-            System.out.print("Notificando prefeitura. Ph em: " + Float.toString(phAgora));
-        }
+    }
+
+    public void notificarPrefeitura(float ph) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Notificação");
+        if (ph > 7)
+            alerta.setContentText("Prefeitura, o ph nas coordenadas: " + this.getCoord().getLatitude() + ", " + this.getCoord().getLongitude() + " estava muito alto.");
+        else
+            alerta.setContentText("Prefeitura, o ph nas coordenadas: " + this.getCoord().getLatitude() + ", " + this.getCoord().getLongitude() + " estava muito baixo.");
+
+        alerta.show();
     }
 
 }
