@@ -23,8 +23,8 @@ public class Lixeira {
     private int id;
 
     public Lixeira(double lati, double longi) {
-        this.capacidade.setPeso(0);
-        this.capacidade.setVolume(0);
+        this.capacidade.setPeso(100);
+        this.capacidade.setVolume(100);
         this.coord = new Coordenada(lati, longi);
     }
 
