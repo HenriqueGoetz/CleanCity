@@ -3,6 +3,7 @@ package com.grupo04.cleancity;
 import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.scheduler.Schedulable;
 import com.grupo04.cleancity.scheduler.Scheduler;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -148,7 +149,7 @@ public class MainController implements Initializable, Schedulable {
         peso.setPromptText("Peso Máximo");
         setIntegerOnly(peso);
 
-        grid.add(new Label( "Volume Max (L)"), 0, 0);
+        grid.add(new Label("Volume Max (L)"), 0, 0);
         grid.add(vol, 1, 0);
         grid.add(new Label("Peso Max (Kg)"), 0, 1);
         grid.add(peso, 1, 1);
@@ -172,6 +173,7 @@ public class MainController implements Initializable, Schedulable {
     public void onAddCaminhaoClick() {
         addCaminhao();
     }
+
     public void onAddColetaClick() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Coleta");
@@ -255,9 +257,9 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public Caminhao selecionaCaminhaoDisponivel(){
-        for(Caminhao caminhoes : Database.getInstance().getCaminhoes()){
-            if(caminhoes.isDisponivel()){
+    public Caminhao selecionaCaminhaoDisponivel() {
+        for (Caminhao caminhoes : Database.getInstance().getCaminhoes()) {
+            if (caminhoes.isDisponivel()) {
                 caminhoes.setDisponivel(false);
                 return caminhoes;
             }
@@ -268,17 +270,16 @@ public class MainController implements Initializable, Schedulable {
     private boolean haCaminhoesDisponiveis() {
         for (Caminhao caminhoe : Database.getInstance().getCaminhoes()) {
             if (caminhoe.isDisponivel()) {
-                caminhoe.setDisponivel(false);
                 return true;
             }
         }
         return false;
     }
 
-    private boolean jaEstaNaListaDeCheias(Lixeira lix){
+    private boolean jaEstaNaListaDeCheias(Lixeira lix) {
 
-        for(Lixeira lixeira : Database.getInstance().getLixeirasCheias()){
-            if(lixeira.equals(lix)){
+        for (Lixeira lixeira : Database.getInstance().getLixeirasCheias()) {
+            if (lixeira.equals(lix)) {
                 return true;
             }
         }
@@ -292,6 +293,7 @@ public class MainController implements Initializable, Schedulable {
             if (rand.nextInt(3) == 0) {
                 lixeira.jogarNaLixeira(); // Simulando o sensor.
                 if (lixeira.verificarLixeira() && !jaEstaNaListaDeCheias(lixeira)) {
+                    Database.getInstance().getLixeirasCheias().remove(lixeira);
                     Database.getInstance().getLixeirasCheias().add(lixeira);
                 }
             }
@@ -324,27 +326,35 @@ public class MainController implements Initializable, Schedulable {
 
     private void verificarColeta() {
         for (Coleta coleta : Database.getInstance().getColetas()) {
-            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
+            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora) {
                 realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
                 System.out.println("Realizou Coleta.");
             }
         }
     }
 
-    public List<Lixeira> selecionarLixeiras(Caminhao caminhao){
+    public List<Lixeira> selecionarLixeiras(Caminhao caminhao) {
         int indice = 0;
         List<Lixeira> selecionadas = new ArrayList<>();
         boolean couber = true;
 
-        while(couber){
-            Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
-            if(lix.getVolume() + caminhao.getLeituraVolume() > 0.8*(caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() > 0.8*(caminhao.getCapacidade().getPeso())){
-                selecionadas.add(lix);
-            }else{
+        while (couber && indice < Database.getInstance().getLixeirasCheias().size()) {
+            if (!Database.getInstance().getLixeirasCheias().isEmpty()) {
+                Lixeira lix = Database.getInstance().getLixeirasCheias().get(indice);
+
+                if (lix.getVolume() + caminhao.getLeituraSensor() < 0.8 * (caminhao.getCapacidade().getVolume()) && lix.getPeso() + caminhao.getLeituraBalanca() < 0.8 * (caminhao.getCapacidade().getPeso())) {
+                    selecionadas.remove(lix);
+                    selecionadas.add(lix);
+                    caminhao.virarDaLixeiraNoCaminhao(lix);
+                } else {
+                    couber = false;
+                }
+            } else {
                 couber = false;
             }
         }
-
+        caminhao.esvaziar();
+        System.out.println(selecionadas.size());
         return selecionadas;
     }
 
@@ -400,9 +410,12 @@ public class MainController implements Initializable, Schedulable {
     private void realizarColeta(List<Lixeira> lixeiras) {
         System.out.println("Realizando Coleta.");
         for (Lixeira lix : lixeiras) {
+            System.out.println("Removeu uma.");
+            lix.esvaziarLixeira();
             Database.getInstance().getLixeirasCheias().remove(lix);
         }
     }
+
     private void recalculaTempo() {
 
         if (this.minuto == 59 && this.hora == 23) {
@@ -428,7 +441,7 @@ public class MainController implements Initializable, Schedulable {
         lblDia.setText(String.valueOf(this.dia));
     }
 
-    private void recalculaDados(){
+    private void recalculaDados() {
         lblLixeiras.setText(String.valueOf(Database.getInstance().getLixeiras().size()));
         lblLixeirasCheias.setText(String.valueOf(Database.getInstance().getLixeirasCheias().size()));
         lblFuncionarios.setText(String.valueOf(Database.getInstance().getFuncionarios().size()));
@@ -437,6 +450,7 @@ public class MainController implements Initializable, Schedulable {
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
         lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
     }
+
     @Override
     public void loop(ActionEvent event) {
         recalculaTempo();

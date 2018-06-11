@@ -1,5 +1,6 @@
 package com.grupo04.cleancity.model.dispositivos;
 
+import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.model.dispositivos.sensor.Balanca;
 import com.grupo04.cleancity.model.Capacidade;
 import com.grupo04.cleancity.model.dispositivos.sensor.SensorSonar;
@@ -18,6 +19,7 @@ public class Caminhao {
     @Deprecated
     public Caminhao() {
         this(0, 0);
+
     }
 
     /**
@@ -27,18 +29,29 @@ public class Caminhao {
      */
     public Caminhao(float volume, float pesoMax) {
         this.capacidade = new Capacidade(volume, pesoMax);
+        this.sensorVolume.setLeituraVolume(0);
+        this.balanca.setLeituraPeso(0);
     }
 
     public boolean isDisponivel() {
         return disponivel;
     }
 
-    public float getLeituraVolume(){
+    public float getLeituraSensor(){
         return this.sensorVolume.getLeituraVolume();
     }
 
     public float getLeituraBalanca(){
         return this.balanca.getLeituraPeso();
+    }
+
+    public void esvaziar(){
+        this.balanca.setLeituraPeso(0);
+        this.sensorVolume.setLeituraVolume(0);
+    }
+    public void virarDaLixeiraNoCaminhao(Lixeira lix){
+        this.sensorVolume.setLeituraVolume(this.sensorVolume.getLeituraVolume()+lix.getVolume());
+        this.balanca.setLeituraPeso(this.balanca.getLeituraPeso()+lix.getPeso());
     }
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
