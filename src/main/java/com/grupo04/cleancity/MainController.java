@@ -1,9 +1,17 @@
 package com.grupo04.cleancity;
 
 import com.grupo04.cleancity.data.Database;
+import com.grupo04.cleancity.model.DiaDaSemana;
+import com.grupo04.cleancity.model.dispositivos.Caminhao;
+import com.grupo04.cleancity.model.dispositivos.Lixeira;
+import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
+import com.grupo04.cleancity.model.equipe.Coleta;
+import com.grupo04.cleancity.model.equipe.Equipe;
+import com.grupo04.cleancity.model.equipe.Funcionario;
+import com.grupo04.cleancity.model.mapa.Coordenada;
+import com.grupo04.cleancity.model.mapa.Mapa;
 import com.grupo04.cleancity.scheduler.Schedulable;
 import com.grupo04.cleancity.scheduler.Scheduler;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,29 +21,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import com.grupo04.cleancity.model.DiaDaSemana;
-import com.grupo04.cleancity.model.dispositivos.Caminhao;
-import com.grupo04.cleancity.model.dispositivos.Lixeira;
-import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
-import com.grupo04.cleancity.model.equipe.Coleta;
-import com.grupo04.cleancity.model.equipe.Equipe;
-import com.grupo04.cleancity.model.equipe.Funcionario;
-import com.grupo04.cleancity.model.mapa.Coordenada;
-import netscape.javascript.JSObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class MainController implements Initializable, Schedulable {
 
     @FXML
-    WebView mapViewer;
+    GridPane mainGrid;
+
     @FXML
     Label lblMin;
     @FXML
@@ -61,36 +56,41 @@ public class MainController implements Initializable, Schedulable {
     private int minuto = 0;
     private int dia = 1;
 
-    private Scheduler scheduler;
-    private JavaApp app = new JavaApp();
+    private Mapa mapa = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        final WebEngine webEngine = mapViewer.getEngine();
-        String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
-        String contents;
-
         try {
-            contents = new String(Files.readAllBytes(Paths.get(path)));
-            webEngine.loadContent(contents);
-            JSObject window = (JSObject) webEngine.executeScript("window");
-            window.setMember("app", app);
+            mapa = new Mapa();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(mapa != null) {
+                this.mainGrid.add(mapa.getWebView(), 1, 1);
+            }
         }
 
-        this.scheduler = new Scheduler(this);
+        Scheduler scheduler = new Scheduler(this);
         scheduler.start();
+    }
 
+    @Override
+    public void loop(ActionEvent event) {
+        recalculaTempo();
+        imprimeTempo();
+        recalculaDados();
+        verificarLixeiras();
+        verificarReguladoresPh();
+        verificarColeta();
     }
 
     public void onAddReguladorClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("adicionarRegulador()");
+            mapa.adicionarRegulador();
 
-            Coordenada coordenada = app.getCoordenadaRecebida();
+            Coordenada coordenada = mapa.getCoordenadaRecebida();
 
-            Database.getInstance().addRegulador(new ReguladorPh(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            Database.getInstance().addRegulador(new ReguladorPh(coordenada.getLatitude(), coordenada.getLongitude(), mapa.getIdRecebido()));
             System.out.println("Regulador Adicionado com sucesso.");
         }
     }
@@ -98,38 +98,59 @@ public class MainController implements Initializable, Schedulable {
     public void onRemoveReguladorClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
 
-            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
-            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
-            mapViewer.getEngine().executeScript("marcadorSel =  null;");
+            mapa.removerRegulador();
 
-            Database.getInstance().removerRegulador(Database.getInstance().getReguladorById(app.getIdRecebido()));
+            Database.getInstance().removerRegulador(Database.getInstance().getReguladorById(mapa.getIdRecebido()));
             System.out.println("Regulador Removido com sucesso.");
         }
     }
 
-
-    public void addLixeira(MouseEvent event) {
+    public void onAddLixeiraClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng())");
+            mapa.adicinarLixeira();
 
-            Coordenada coordenada = app.getCoordenadaRecebida();
+            Coordenada coordenada = mapa.getCoordenadaRecebida();
 
-            Database.getInstance().addLixeira(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            Database.getInstance().addLixeira(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), mapa.getIdRecebido()));
             System.out.println("Lixeira Adicionada com sucesso.");
         }
     }
 
-    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
-        lixeira.getCoord().setLatitude(coord.getLatitude());
-        lixeira.getCoord().setLongitude(coord.getLongitude());
+    public void onRemoveLixeiraClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            mapa.removerLixeira();
+
+            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(mapa.getIdRecebido()));
+            System.out.println("Lixeira Removida com sucesso.");
+        }
     }
 
-    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
-        regulador.getCoord().setLatitude(coord.getLatitude());
-        regulador.getCoord().setLongitude(coord.getLongitude());
+    public void onAddEquipeClick() {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Equipe");
+        inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
+        inputDialog.getEditor().setPromptText("ID da Equipe");
+        setIntegerOnly(inputDialog.getEditor());
+
+        inputDialog.showAndWait().ifPresent(id -> {
+            if (!id.isEmpty())
+                addEquipe(Integer.parseInt(id));
+        });
     }
 
-    private void addCaminhao() {
+    public void onAddFuncionarioClick() {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Funcionário");
+        inputDialog.setHeaderText("Digite o nome do funcionário:");
+        inputDialog.getEditor().setPromptText("Nome");
+
+        inputDialog.showAndWait().ifPresent(name -> {
+            if (!name.isEmpty())
+                addFuncionario(name);
+        });
+    }
+
+    public void onAddCaminhaoClick() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Caminhão");
         dialog.setHeaderText("Especifique a capacidade:");
@@ -168,10 +189,6 @@ public class MainController implements Initializable, Schedulable {
         if (result.isPresent() && !result.get()[0].isEmpty() && !result.get()[1].isEmpty()) {
             Database.getInstance().addCaminhao(new Caminhao(Float.valueOf(result.get()[0]), Float.valueOf(result.get()[1])));
         }
-    }
-
-    public void onAddCaminhaoClick() {
-        addCaminhao();
     }
 
     public void onAddColetaClick() {
@@ -237,6 +254,16 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
+    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
+        lixeira.getCoord().setLatitude(coord.getLatitude());
+        lixeira.getCoord().setLongitude(coord.getLongitude());
+    }
+
+    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
+        regulador.getCoord().setLatitude(coord.getLatitude());
+        regulador.getCoord().setLongitude(coord.getLongitude());
+    }
+
     private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
         if (!hora.getText().isEmpty() && !min.getText().isEmpty() &&
                 dias.getText().matches("[1-7] *([,] *[1-7] *)*")) {
@@ -257,7 +284,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public Caminhao selecionaCaminhaoDisponivel() {
+    private Caminhao selecionaCaminhaoDisponivel() {
         for (Caminhao caminhoes : Database.getInstance().getCaminhoes()) {
             if (caminhoes.isDisponivel()) {
                 caminhoes.setDisponivel(false);
@@ -289,19 +316,6 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public void removeLixeira(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            //mapViewer.getEngine().executeScript("removeMarcador = true");
-
-            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
-            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
-            mapViewer.getEngine().executeScript("marcadorSel =  null;");
-
-            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(app.getIdRecebido()));
-            System.out.println("Lixeira Removida com sucesso.");
-        }
-    }
-
     private void verificarReguladoresPh() {
         Random rand = new Random();
         for (ReguladorPh aReguladoresPH : Database.getInstance().getReguladoresPH()) {
@@ -322,7 +336,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public List<Lixeira> selecionarLixeiras(Caminhao caminhao) {
+    private List<Lixeira> selecionarLixeiras(Caminhao caminhao) {
         int indice = 0;
         List<Lixeira> selecionadas = new ArrayList<>();
         boolean couber = true;
@@ -357,34 +371,8 @@ public class MainController implements Initializable, Schedulable {
         System.out.println("Coleta realizada.");
     }
 
-
-    public void onAddFuncionarioClick() {
-        TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.setTitle("Adicionar Funcionário");
-        inputDialog.setHeaderText("Digite o nome do funcionário:");
-        inputDialog.getEditor().setPromptText("Nome");
-
-        inputDialog.showAndWait().ifPresent(name -> {
-            if (!name.isEmpty())
-                addFuncionario(name);
-        });
-    }
-
     private void addFuncionario(String nome) {
         Database.getInstance().addFuncionario(new Funcionario(nome));
-    }
-
-    public void onAddEquipeClick() {
-        TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.setTitle("Adicionar Equipe");
-        inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
-        inputDialog.getEditor().setPromptText("ID da Equipe");
-        setIntegerOnly(inputDialog.getEditor());
-
-        inputDialog.showAndWait().ifPresent(id -> {
-            if (!id.isEmpty())
-                addEquipe(Integer.parseInt(id));
-        });
     }
 
     private void addEquipe(int id) {
@@ -440,16 +428,6 @@ public class MainController implements Initializable, Schedulable {
         lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
         lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
-    }
-
-    @Override
-    public void loop(ActionEvent event) {
-        recalculaTempo();
-        imprimeTempo();
-        recalculaDados();
-        verificarLixeiras();
-        verificarReguladoresPh();
-        verificarColeta();
     }
 
     private void setIntegerOnly(TextInputControl input) {

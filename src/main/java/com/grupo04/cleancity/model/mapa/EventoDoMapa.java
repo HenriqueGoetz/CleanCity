@@ -14,7 +14,7 @@ import javafx.event.Event;
  */
 public class EventoDoMapa extends Event {
 
-    public EventoDoMapa(MapaGoogle map, double lat, double lng) {
+    public EventoDoMapa(Mapa map, double lat, double lng) {
         super(map, Event.NULL_SOURCE_TARGET, Event.ANY);
         this.lat = lat;
         this.lng = lng;
