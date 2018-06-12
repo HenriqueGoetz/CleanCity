@@ -52,9 +52,9 @@
             <Label fx:id="lblLixeirasCheias" layoutX="160.0" layoutY="437.0" text="0" />
             <VBox alignment="TOP_CENTER" prefWidth="200.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onMouseClicked="#addLixeira" prefHeight="30.0" prefWidth="130.0" text="Adicionar Lixeira" />
-                  <Button mnemonicParsing="false" onMouseClicked="#removeLixeira" prefHeight="30.0" prefWidth="130.0" text="Remover Lixeira" />
-                  <Button mnemonicParsing="false" onAction="#onAddCaminhaoClick" prefHeight="30.0" prefWidth="130.0" text="Novo Caminhão" />
+                  <Button mnemonicParsing="false" onMouseClicked="#onAddLixeiraClick" prefHeight="30.0" prefWidth="130.0" text="Adicionar Lixeira" />
+                  <Button mnemonicParsing="false" onMouseClicked="#onRemoveLixeiraClick" prefHeight="30.0" prefWidth="130.0" text="Remover Lixeira" />
+                  <Button mnemonicParsing="false" onMouseClicked="#onAddCaminhaoClick" prefHeight="30.0" prefWidth="130.0" text="Novo Caminhão" />
                   <Button mnemonicParsing="false" onMouseClicked="#onAddReguladorClick" prefHeight="30.0" prefWidth="130.0" text="Adicionar Regulador" />
                   <Button mnemonicParsing="false" onMouseClicked="#onRemoveReguladorClick" prefHeight="30.0" prefWidth="130.0" text="Remover Regulador" />
                </children>

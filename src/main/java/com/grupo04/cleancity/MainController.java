@@ -72,7 +72,16 @@ public class MainController implements Initializable, Schedulable {
 
         Scheduler scheduler = new Scheduler(this);
         scheduler.start();
+    }
 
+    @Override
+    public void loop(ActionEvent event) {
+        recalculaTempo();
+        imprimeTempo();
+        recalculaDados();
+        verificarLixeiras();
+        verificarReguladoresPh();
+        verificarColeta();
     }
 
     public void onAddReguladorClick(MouseEvent event) {
@@ -96,8 +105,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-
-    public void addLixeira(MouseEvent event) {
+    public void onAddLixeiraClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             mapa.adicinarLixeira();
 
@@ -108,17 +116,41 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
-        lixeira.getCoord().setLatitude(coord.getLatitude());
-        lixeira.getCoord().setLongitude(coord.getLongitude());
+    public void onRemoveLixeiraClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            mapa.removerLixeira();
+
+            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(mapa.getIdRecebido()));
+            System.out.println("Lixeira Removida com sucesso.");
+        }
     }
 
-    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
-        regulador.getCoord().setLatitude(coord.getLatitude());
-        regulador.getCoord().setLongitude(coord.getLongitude());
+    public void onAddEquipeClick() {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Equipe");
+        inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
+        inputDialog.getEditor().setPromptText("ID da Equipe");
+        setIntegerOnly(inputDialog.getEditor());
+
+        inputDialog.showAndWait().ifPresent(id -> {
+            if (!id.isEmpty())
+                addEquipe(Integer.parseInt(id));
+        });
     }
 
-    private void addCaminhao() {
+    public void onAddFuncionarioClick() {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Adicionar Funcionário");
+        inputDialog.setHeaderText("Digite o nome do funcionário:");
+        inputDialog.getEditor().setPromptText("Nome");
+
+        inputDialog.showAndWait().ifPresent(name -> {
+            if (!name.isEmpty())
+                addFuncionario(name);
+        });
+    }
+
+    public void onAddCaminhaoClick() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Adicionar Caminhão");
         dialog.setHeaderText("Especifique a capacidade:");
@@ -157,10 +189,6 @@ public class MainController implements Initializable, Schedulable {
         if (result.isPresent() && !result.get()[0].isEmpty() && !result.get()[1].isEmpty()) {
             Database.getInstance().addCaminhao(new Caminhao(Float.valueOf(result.get()[0]), Float.valueOf(result.get()[1])));
         }
-    }
-
-    public void onAddCaminhaoClick() {
-        addCaminhao();
     }
 
     public void onAddColetaClick() {
@@ -226,6 +254,16 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
+    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
+        lixeira.getCoord().setLatitude(coord.getLatitude());
+        lixeira.getCoord().setLongitude(coord.getLongitude());
+    }
+
+    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
+        regulador.getCoord().setLatitude(coord.getLatitude());
+        regulador.getCoord().setLongitude(coord.getLongitude());
+    }
+
     private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
         if (!hora.getText().isEmpty() && !min.getText().isEmpty() &&
                 dias.getText().matches("[1-7] *([,] *[1-7] *)*")) {
@@ -275,15 +313,6 @@ public class MainController implements Initializable, Schedulable {
                     Database.getInstance().getLixeirasCheias().add(lixeira);
                 }
             }
-        }
-    }
-
-    public void removeLixeira(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            mapa.removerLixeira();
-
-            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(mapa.getIdRecebido()));
-            System.out.println("Lixeira Removida com sucesso.");
         }
     }
 
@@ -342,34 +371,8 @@ public class MainController implements Initializable, Schedulable {
         System.out.println("Coleta realizada.");
     }
 
-
-    public void onAddFuncionarioClick() {
-        TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.setTitle("Adicionar Funcionário");
-        inputDialog.setHeaderText("Digite o nome do funcionário:");
-        inputDialog.getEditor().setPromptText("Nome");
-
-        inputDialog.showAndWait().ifPresent(name -> {
-            if (!name.isEmpty())
-                addFuncionario(name);
-        });
-    }
-
     private void addFuncionario(String nome) {
         Database.getInstance().addFuncionario(new Funcionario(nome));
-    }
-
-    public void onAddEquipeClick() {
-        TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.setTitle("Adicionar Equipe");
-        inputDialog.setHeaderText("Digite ID (número inteiro) da equipe. Três funcionários aleatórios serão alocado para a equipe.");
-        inputDialog.getEditor().setPromptText("ID da Equipe");
-        setIntegerOnly(inputDialog.getEditor());
-
-        inputDialog.showAndWait().ifPresent(id -> {
-            if (!id.isEmpty())
-                addEquipe(Integer.parseInt(id));
-        });
     }
 
     private void addEquipe(int id) {
@@ -425,16 +428,6 @@ public class MainController implements Initializable, Schedulable {
         lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
         lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
-    }
-
-    @Override
-    public void loop(ActionEvent event) {
-        recalculaTempo();
-        imprimeTempo();
-        recalculaDados();
-        verificarLixeiras();
-        verificarReguladoresPh();
-        verificarColeta();
     }
 
     private void setIntegerOnly(TextInputControl input) {
