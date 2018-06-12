@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.grupo04.cleancity.MainController">
+<GridPane fx:id="mainGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.grupo04.cleancity.MainController">
     <columnConstraints>
         <ColumnConstraints minWidth="200.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -30,7 +30,6 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <WebView fx:id="mapViewer" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 0 1 0 0; -fx-border-color: darkgray;" GridPane.rowIndex="1">
          <children>
             <Label id="lblDia" fx:id="lblDia" layoutX="30.0" layoutY="643.0" text="0" />

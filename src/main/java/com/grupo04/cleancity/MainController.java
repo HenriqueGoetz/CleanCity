@@ -1,9 +1,17 @@
 package com.grupo04.cleancity;
 
 import com.grupo04.cleancity.data.Database;
+import com.grupo04.cleancity.model.DiaDaSemana;
+import com.grupo04.cleancity.model.dispositivos.Caminhao;
+import com.grupo04.cleancity.model.dispositivos.Lixeira;
+import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
+import com.grupo04.cleancity.model.equipe.Coleta;
+import com.grupo04.cleancity.model.equipe.Equipe;
+import com.grupo04.cleancity.model.equipe.Funcionario;
+import com.grupo04.cleancity.model.mapa.Coordenada;
+import com.grupo04.cleancity.model.mapa.Mapa;
 import com.grupo04.cleancity.scheduler.Schedulable;
 import com.grupo04.cleancity.scheduler.Scheduler;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,29 +21,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import com.grupo04.cleancity.model.DiaDaSemana;
-import com.grupo04.cleancity.model.dispositivos.Caminhao;
-import com.grupo04.cleancity.model.dispositivos.Lixeira;
-import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
-import com.grupo04.cleancity.model.equipe.Coleta;
-import com.grupo04.cleancity.model.equipe.Equipe;
-import com.grupo04.cleancity.model.equipe.Funcionario;
-import com.grupo04.cleancity.model.mapa.Coordenada;
-import netscape.javascript.JSObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class MainController implements Initializable, Schedulable {
 
     @FXML
-    WebView mapViewer;
+    GridPane mainGrid;
+
     @FXML
     Label lblMin;
     @FXML
@@ -61,36 +56,32 @@ public class MainController implements Initializable, Schedulable {
     private int minuto = 0;
     private int dia = 1;
 
-    private Scheduler scheduler;
-    private JavaApp app = new JavaApp();
+    private Mapa mapa = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        final WebEngine webEngine = mapViewer.getEngine();
-        String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
-        String contents;
-
         try {
-            contents = new String(Files.readAllBytes(Paths.get(path)));
-            webEngine.loadContent(contents);
-            JSObject window = (JSObject) webEngine.executeScript("window");
-            window.setMember("app", app);
+            mapa = new Mapa();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(mapa != null) {
+                this.mainGrid.add(mapa.getWebView(), 1, 1);
+            }
         }
 
-        this.scheduler = new Scheduler(this);
+        Scheduler scheduler = new Scheduler(this);
         scheduler.start();
 
     }
 
     public void onAddReguladorClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("adicionarRegulador()");
+            mapa.adicionarRegulador();
 
-            Coordenada coordenada = app.getCoordenadaRecebida();
+            Coordenada coordenada = mapa.getCoordenadaRecebida();
 
-            Database.getInstance().addRegulador(new ReguladorPh(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            Database.getInstance().addRegulador(new ReguladorPh(coordenada.getLatitude(), coordenada.getLongitude(), mapa.getIdRecebido()));
             System.out.println("Regulador Adicionado com sucesso.");
         }
     }
@@ -98,11 +89,9 @@ public class MainController implements Initializable, Schedulable {
     public void onRemoveReguladorClick(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
 
-            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
-            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
-            mapViewer.getEngine().executeScript("marcadorSel =  null;");
+            mapa.removerRegulador();
 
-            Database.getInstance().removerRegulador(Database.getInstance().getReguladorById(app.getIdRecebido()));
+            Database.getInstance().removerRegulador(Database.getInstance().getReguladorById(mapa.getIdRecebido()));
             System.out.println("Regulador Removido com sucesso.");
         }
     }
@@ -110,11 +99,11 @@ public class MainController implements Initializable, Schedulable {
 
     public void addLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            mapViewer.getEngine().executeScript("adicionarLixeira(new google.maps.LatLng())");
+            mapa.adicinarLixeira();
 
-            Coordenada coordenada = app.getCoordenadaRecebida();
+            Coordenada coordenada = mapa.getCoordenadaRecebida();
 
-            Database.getInstance().addLixeira(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), app.getIdRecebido()));
+            Database.getInstance().addLixeira(new Lixeira(coordenada.getLatitude(), coordenada.getLongitude(), mapa.getIdRecebido()));
             System.out.println("Lixeira Adicionada com sucesso.");
         }
     }
@@ -257,7 +246,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public Caminhao selecionaCaminhaoDisponivel() {
+    private Caminhao selecionaCaminhaoDisponivel() {
         for (Caminhao caminhoes : Database.getInstance().getCaminhoes()) {
             if (caminhoes.isDisponivel()) {
                 caminhoes.setDisponivel(false);
@@ -291,13 +280,9 @@ public class MainController implements Initializable, Schedulable {
 
     public void removeLixeira(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            //mapViewer.getEngine().executeScript("removeMarcador = true");
+            mapa.removerLixeira();
 
-            mapViewer.getEngine().executeScript("marcadorSel.setMap(null);");
-            //mapViewer.getEngine().executeScript("reguladores.splice(reguladores.indexOf(marcadorSel), 1);");
-            mapViewer.getEngine().executeScript("marcadorSel =  null;");
-
-            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(app.getIdRecebido()));
+            Database.getInstance().removerLixeira(Database.getInstance().getLixeiraById(mapa.getIdRecebido()));
             System.out.println("Lixeira Removida com sucesso.");
         }
     }
@@ -322,7 +307,7 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    public List<Lixeira> selecionarLixeiras(Caminhao caminhao) {
+    private List<Lixeira> selecionarLixeiras(Caminhao caminhao) {
         int indice = 0;
         List<Lixeira> selecionadas = new ArrayList<>();
         boolean couber = true;
