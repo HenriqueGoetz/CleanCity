@@ -1,14 +1,13 @@
-package com.grupo04.cleancity;
+package com.grupo04.cleancity.model.mapa;
 
+import com.grupo04.cleancity.MainController;
 import com.grupo04.cleancity.data.Database;
-import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
-import com.grupo04.cleancity.model.mapa.Coordenada;
 import com.grupo04.cleancity.model.dispositivos.Lixeira;
+import com.grupo04.cleancity.model.dispositivos.ReguladorPh;
 
 public class JavaApp {
 
     private Coordenada coordenadaRecebida;
-    private MainController controller;
     private int idRecebido;
 
     public void recebeCoordenada(String coord) {
