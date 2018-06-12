@@ -65,7 +65,7 @@ public class MainController implements Initializable, Schedulable {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(mapa != null) {
+            if (mapa != null) {
                 this.mainGrid.add(mapa.getWebView(), 1, 1);
             }
         }
@@ -254,23 +254,14 @@ public class MainController implements Initializable, Schedulable {
         }
     }
 
-    static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
+    public static void reposicionaLixeira(Lixeira lixeira, Coordenada coord) {
         lixeira.getCoord().setLatitude(coord.getLatitude());
         lixeira.getCoord().setLongitude(coord.getLongitude());
     }
 
-    static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
+    public static void reposicionaRegulador(ReguladorPh regulador, Coordenada coord) {
         regulador.getCoord().setLatitude(coord.getLatitude());
         regulador.getCoord().setLongitude(coord.getLongitude());
-    }
-
-    private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
-        if (!hora.getText().isEmpty() && !min.getText().isEmpty() &&
-                dias.getText().matches("[1-7] *([,] *[1-7] *)*")) {
-            btn.setDisable(false);
-        } else {
-            btn.setDisable(true);
-        }
     }
 
     private void addColeta(int hora, int min, DiaDaSemana[] dias) {
@@ -396,7 +387,6 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void recalculaTempo() {
-
         if (this.minuto == 59 && this.hora == 23) {
             if (this.dia != 7)
                 this.dia++;
@@ -428,6 +418,14 @@ public class MainController implements Initializable, Schedulable {
         lblCaminhoes.setText(String.valueOf(Database.getInstance().getCaminhoes().size()));
         lblColetas.setText(String.valueOf(Database.getInstance().getColetas().size()));
         lblReguladoresPh.setText(String.valueOf(Database.getInstance().getReguladoresPH().size()));
+    }
+
+    private void inputColetaChecker(TextField hora, TextField min, TextField dias, Node btn) {
+        btn.setDisable(
+                hora.getText().isEmpty() ||
+                min.getText().isEmpty() ||
+                !dias.getText().matches("[1-7] *([,] *[1-7] *)*")
+        );
     }
 
     private void setIntegerOnly(TextInputControl input) {

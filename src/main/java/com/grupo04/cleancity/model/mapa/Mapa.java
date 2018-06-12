@@ -1,6 +1,5 @@
 package com.grupo04.cleancity.model.mapa;
 
-import com.grupo04.cleancity.JavaApp;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
