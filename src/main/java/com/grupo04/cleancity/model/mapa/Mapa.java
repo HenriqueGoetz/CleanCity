@@ -67,16 +67,13 @@ public class Mapa {
     }
 
     public void criarRota(List<Lixeira> lixeiras){
-        System.out.println("Adicionando lixeira na rota");
-        JSObject jsobj = (JSObject)webView.getEngine().executeScript("window");
         for (Lixeira lix : lixeiras) {
-            jsobj.call("adicionarAoArrayDeWayPoints", lix.getCoord().getLatitude(), lix.getCoord().getLongitude());
+            webView.getEngine().executeScript("adicionarAoArrayDeWayPoints(" + lix.getCoord().getLatitude() + "," +  lix.getCoord().getLongitude() + ")");
         }
-        System.out.println("Lixeira adicionada na rota");
+        System.out.println("Lixeiras adicionadas na rota");
     }
 
     public void mostrarRota(){
-        System.out.println("Vai mostrar a rota");
         webView.getEngine().executeScript("calcularRota()");
     }
 }

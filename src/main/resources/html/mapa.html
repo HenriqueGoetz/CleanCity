@@ -34,7 +34,7 @@
             var servicoDirecao;
             var displayDirecao;
             var lixeirasWayPoints = [];
-            var garagem = mapa.getCenter();
+            var garagem;
             var latWayPoint;
             var lngWayPoint;
             var contadorIdRegulador = 0;
@@ -52,7 +52,10 @@
                 servicoDirecao = new google.maps.DirectionsService();
                 displayDirecao = new google.maps.DirectionsRenderer();
                 displayDirecao.setMap(mapa);
+
+                garagem = mapa.getCenter();
             }
+
 
             var estilos = {
                 default: null,
