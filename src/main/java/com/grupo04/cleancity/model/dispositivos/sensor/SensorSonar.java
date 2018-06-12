@@ -17,14 +17,26 @@ public class SensorSonar extends Sensor {
 
     private float leituraVolume = 0;
 
+    /**
+     *
+     * @return leitura de volume do sensor
+     */
     public float getLeituraVolume() {
         return leituraVolume;
     }
 
+    /**
+     *
+     * @param leituraVolume valor a ser setado como leitura de volume do pH
+     */
     public void setLeituraVolume(float leituraVolume) {
         this.leituraVolume = leituraVolume;
     }
 
+    /**
+     * Realiza a leitura do volume incrementando o volume original
+     * @param limite valor máximo suportado como volume lido
+     */
     public void lerVolume(float limite) {
         Random random = new Random();
         setLeituraVolume((float) (this.leituraVolume + random.nextFloat() * 0.5));
@@ -34,6 +46,9 @@ public class SensorSonar extends Sensor {
         }
     }
 
+    /**
+     * Zera o valor da leitura do sensor
+     */
     public void zerarVolume() {
         setLeituraVolume(0);
     }

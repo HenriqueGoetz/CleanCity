@@ -23,10 +23,18 @@ public class Balanca extends Sensor {
         return leituraPeso;
     }
 
+    /**
+     *
+     * @param leituraPeso Setter do peso lido pela balança
+     */
     public void setLeituraPeso(float leituraPeso) {
         this.leituraPeso = leituraPeso;
     }
 
+    /**
+     *
+     * @param limite Valor máximo que pode ser lido pela balança
+     */
     public void lerBalanca(float limite) {
         Random random = new Random();
         setLeituraPeso((float) ((random.nextInt() % 10) + this.leituraPeso));
@@ -34,7 +42,10 @@ public class Balanca extends Sensor {
             setLeituraPeso(limite);
         }
     }
-    
+
+    /**
+     *  Zera o valor da leitura da balança
+     */
     public void zerarBalanca(){
         setLeituraPeso(0);
     }

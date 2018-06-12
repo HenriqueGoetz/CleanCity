@@ -20,10 +20,17 @@ public class SensorOxigenio extends Sensor {
         return leituraOxigenioDissolvido;
     }
 
+    /**
+     *
+     * @param leituraOxigenioDissolvido valor a ser setado para a leitura do sensor
+     */
     public void setLeituraOxigenioDissolvido(float leituraOxigenioDissolvido) {
         this.leituraOxigenioDissolvido = leituraOxigenioDissolvido;
     }
-    
+
+    /**
+     * Realiza uma leitura de oxigênio, reajandando o valor lido no intervalo de 0 a 100 caso esteja fora do mesmo
+     */
     private void lerOxigenioDissolvido() {
         Random random = new Random();
         setLeituraOxigenioDissolvido((float) (random.nextGaussian() + this.leituraOxigenioDissolvido));

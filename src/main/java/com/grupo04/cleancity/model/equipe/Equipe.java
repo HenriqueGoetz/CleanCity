@@ -14,6 +14,11 @@ public class Equipe {
     private Funcionario[] funcionarios;
     private int id;
 
+    /**
+     *
+     * @param funcionarios array de funcionários que integrarão a equipe
+     * @param id número identificador da equipe
+     */
     public Equipe(Funcionario[] funcionarios, int id) {
         this.funcionarios = funcionarios;
         this.id = id;

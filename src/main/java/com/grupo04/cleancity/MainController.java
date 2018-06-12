@@ -56,6 +56,7 @@ public class MainController implements Initializable, Schedulable {
     private int minuto = 0;
     private int dia = 1;
 
+    private boolean apagouRota = false;
     private Mapa mapa = null;
 
     @Override
@@ -321,8 +322,14 @@ public class MainController implements Initializable, Schedulable {
     private void verificarColeta() {
         for (Coleta coleta : Database.getInstance().getColetas()) {
             if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && true) { // no lugar de true deveria ser coleta.EhDiaDaColeta(this.dia)
+                if(!apagouRota){
+                    mapa.apagarRota();
+                    apagouRota = true;
+                }
                 realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
                 System.out.println("Realizou Coleta.");
+            } else {
+                apagouRota = false;
             }
         }
     }

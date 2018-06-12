@@ -16,14 +16,25 @@ public class SensorPh extends Sensor {
 
     private float leituraPh = 7;
 
+    /**
+     *
+     * @return leitura de pH do sensor
+     */
     public float getLeituraPh() {
         return leituraPh;
     }
 
+    /**
+     *
+     * @param leituraPh valor a ser setado para a leitura do pH do sensor
+     */
     public void setLeituraPh(float leituraPh) {
         this.leituraPh = leituraPh;
     }
 
+    /**
+     * Realiza uma leitura de pH incrementando ou decrementando o pH, ajustando o valor para o intervalo de 0 a 14
+     */
     public void lerPH() {
         Random random = new Random();
         int fator = random.nextInt(2);
