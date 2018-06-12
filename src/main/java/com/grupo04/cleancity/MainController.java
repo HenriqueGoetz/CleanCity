@@ -320,7 +320,7 @@ public class MainController implements Initializable, Schedulable {
 
     private void verificarColeta() {
         for (Coleta coleta : Database.getInstance().getColetas()) {
-            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && coleta.EhDiaDaColeta(this.dia)) {
+            if (coleta.getMinutos() == this.minuto && coleta.getHora() == this.hora && true) { // no lugar de true deveria ser coleta.EhDiaDaColeta(this.dia)
                 realizarColeta(selecionarLixeiras(coleta.getCaminhao()));
                 System.out.println("Realizou Coleta.");
             }
