@@ -355,6 +355,8 @@ public class MainController implements Initializable, Schedulable {
     }
 
     private void realizarColeta(List<Lixeira> lixeiras) {
+        mapa.criarRota(lixeiras);
+        mapa.mostrarRota();
         for (Lixeira lix : lixeiras) {
             lix.esvaziarLixeira();
             Database.getInstance().getLixeirasCheias().remove(lix);

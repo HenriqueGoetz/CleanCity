@@ -1,5 +1,7 @@
 package com.grupo04.cleancity.model.mapa;
 
+import com.grupo04.cleancity.data.Database;
+import com.grupo04.cleancity.model.dispositivos.Lixeira;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -8,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author Lucas Hagen.
@@ -61,5 +64,19 @@ public class Mapa {
     public void removerLixeira() {
         webView.getEngine().executeScript("marcadorSel.setMap(null);");
         webView.getEngine().executeScript("marcadorSel =  null;");
+    }
+
+    public void criarRota(List<Lixeira> lixeiras){
+        System.out.println("Adicionando lixeira na rota");
+        JSObject jsobj = (JSObject)webView.getEngine().executeScript("window");
+        for (Lixeira lix : lixeiras) {
+            jsobj.call("adicionarAoArrayDeWayPoints", lix.getCoord().getLatitude(), lix.getCoord().getLongitude());
+        }
+        System.out.println("Lixeira adicionada na rota");
+    }
+
+    public void mostrarRota(){
+        System.out.println("Vai mostrar a rota");
+        webView.getEngine().executeScript("calcularRota()");
     }
 }
