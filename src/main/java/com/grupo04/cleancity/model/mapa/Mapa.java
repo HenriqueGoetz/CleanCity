@@ -1,15 +1,14 @@
 package com.grupo04.cleancity.model.mapa;
 
-import com.grupo04.cleancity.data.Database;
 import com.grupo04.cleancity.model.dispositivos.Lixeira;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -31,11 +30,16 @@ public class Mapa {
         app = new JavaApp();
 
         WebEngine webEngine = webView.getEngine();
-        String path = new File("src/main/resources/html/mapa.html").getAbsolutePath();
-        String contents;
 
-        contents = new String(Files.readAllBytes(Paths.get(path)));
-        webEngine.loadContent(contents);
+        InputStream in = getClass().getResourceAsStream("/html/mapa.html");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder contents = new StringBuilder();
+
+        String line;
+        while((line = reader.readLine()) != null)
+            contents.append(line).append("\n");
+
+        webEngine.loadContent(contents.toString());
         JSObject window = (JSObject) webEngine.executeScript("window");
         window.setMember("app", app);
     }
